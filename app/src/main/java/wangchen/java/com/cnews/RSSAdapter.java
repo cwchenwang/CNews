@@ -52,28 +52,4 @@ public class RSSAdapter extends ArrayAdapter<RSSItem> {
 
     return convertView;
   }
-//  public View getView(int position, View convertView, ViewGroup parent) {
-//    View rowView;
-//
-//    if(convertView == null) {
-//      LayoutInflater inflater = ((Activity)this.getContext()).getLayoutInflater();
-//      convertView = inflater.inflate(R.layout.newsitem, null);
-//    }
-//
-//    rowView = convertView;
-//    ImageView thumbImageView = (ImageView) rowView
-//            .findViewById(R.id.newspic);
-//
-//      thumbImageView.setImageResource(R.drawable.apple);
-//
-//    TextView postTitleView = (TextView) rowView
-//            .findViewById(R.id.newstitle);
-//    postTitleView.setText(rssList.get(position).getTitle());
-//
-//    TextView postDateView = (TextView) rowView
-//            .findViewById(R.id.newsdate);
-//    postDateView.setText(rssList.get(position).getPubDate());
-//
-//    return rowView;
-//  }
 }
