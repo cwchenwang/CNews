@@ -4,7 +4,8 @@ package wangchen.java.com.cnews;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ListView;
-import android.widget.Toast;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.util.Log;
 import android.os.AsyncTask;
 import android.view.Menu;
@@ -19,7 +20,10 @@ import java.net.MalformedURLException;
 import java.text.SimpleDateFormat;
 
 public class MainActivity extends AppCompatActivity {
+  //Code for view
+  AlertDialog aboutDialog;
 
+  //Code for data
   ArrayList<RSSItem> rssList;
   RSSAdapter adapter;
   RssDataController dataController;
@@ -50,7 +54,18 @@ public class MainActivity extends AppCompatActivity {
   public boolean onOptionsItemSelected(MenuItem item) {
     int id = item.getItemId();
     if(id == 1) {
-      Toast.makeText(getApplicationContext(), "CNews is a newsapp developed by Clarence Wang",Toast.LENGTH_SHORT).show();
+      if(aboutDialog == null) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+        alertDialog.setTitle("About CNews");
+        alertDialog.setPositiveButton("Sure", new DialogInterface.OnClickListener() {
+          public void onClick(DialogInterface dialog, int which) {
+            aboutDialog.dismiss();//close Dialog
+          }
+        });
+        alertDialog.setMessage("CNews is a newsapp developed by Clarence Wang");
+        aboutDialog = alertDialog.create();
+      }
+      aboutDialog.show();
     }
     return super.onContextItemSelected(item);
   }
@@ -89,6 +104,5 @@ public class MainActivity extends AppCompatActivity {
       }
       adapter.notifyDataSetChanged();
     }
-    
   }
 }
