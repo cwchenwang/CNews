@@ -9,6 +9,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 
 class ViewHolder {
   ImageView imageView;
@@ -17,8 +19,9 @@ class ViewHolder {
 }
 
 public class RSSAdapter extends ArrayAdapter<RSSItem> {
-  private final RSSItem[] rssList;
-  public RSSAdapter(Context context, int resource, RSSItem[] objects) {
+  private final ArrayList<RSSItem> rssList;
+
+  public RSSAdapter(Context context, int resource, ArrayList<RSSItem> objects) {
     super(context, resource, objects);
     rssList = objects;
   }
@@ -26,23 +29,51 @@ public class RSSAdapter extends ArrayAdapter<RSSItem> {
   @Override
   public View getView(int position, View convertView, ViewGroup parent) {
     ViewHolder viewHolder;
-    if(convertView == null) {
+
+    if (convertView == null) {
       LayoutInflater inflater = ((Activity)this.getContext()).getLayoutInflater();
-      View myView = inflater.inflate(R.layout.newsitem, null);
+      convertView = inflater.inflate(R.layout.newsitem, null);
+
       viewHolder = new ViewHolder();
-      viewHolder.imageView = convertView.findViewById(R.id.newspic);
-      viewHolder.titleView = convertView.findViewById(R.id.newstitle);
-      viewHolder.dateView = convertView.findViewById(R.id.newsdate);
+      viewHolder.imageView = (ImageView) convertView
+              .findViewById(R.id.newspic);
+      viewHolder.titleView = (TextView) convertView
+              .findViewById(R.id.newstitle);
+      viewHolder.dateView = (TextView) convertView
+              .findViewById(R.id.newsdate);
+      convertView.setTag(viewHolder);
     } else {
-      viewHolder = (ViewHolder)convertView.getTag();
+      viewHolder = (ViewHolder) convertView.getTag();
     }
 
     viewHolder.imageView.setImageResource(R.drawable.apple);
-
-    viewHolder.titleView.setText(rssList[position].getTitle());
-
-    viewHolder.dateView.setText(rssList[position].getPubDate());
+    viewHolder.titleView.setText(rssList.get(position).getTitle());
+    viewHolder.dateView.setText(rssList.get(position).getPubDate());
 
     return convertView;
   }
+//  public View getView(int position, View convertView, ViewGroup parent) {
+//    View rowView;
+//
+//    if(convertView == null) {
+//      LayoutInflater inflater = ((Activity)this.getContext()).getLayoutInflater();
+//      convertView = inflater.inflate(R.layout.newsitem, null);
+//    }
+//
+//    rowView = convertView;
+//    ImageView thumbImageView = (ImageView) rowView
+//            .findViewById(R.id.newspic);
+//
+//      thumbImageView.setImageResource(R.drawable.apple);
+//
+//    TextView postTitleView = (TextView) rowView
+//            .findViewById(R.id.newstitle);
+//    postTitleView.setText(rssList.get(position).getTitle());
+//
+//    TextView postDateView = (TextView) rowView
+//            .findViewById(R.id.newsdate);
+//    postDateView.setText(rssList.get(position).getPubDate());
+//
+//    return rowView;
+//  }
 }

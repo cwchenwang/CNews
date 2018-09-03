@@ -7,6 +7,16 @@ public class RSSItem {
   private String description;
   private String pubDate;
   private String guid;
+
+  public RSSItem() {
+
+  }
+  public RSSItem(String title, String link, String pubDate) {
+    this.title = title;
+    this.link = link;
+    this.pubDate = pubDate;
+  }
+
   public String getTitle() {
     return title;
   }
