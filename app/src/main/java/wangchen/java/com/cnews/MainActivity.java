@@ -13,7 +13,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.content.Intent;
 import android.widget.TextView;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.io.InputStream;
@@ -38,18 +37,20 @@ public class MainActivity extends AppCompatActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.newslist);
 
-//    generateData(30);
     listView = findViewById(R.id.newslistView);
-//    adapter = new RSSAdapter(this, R.layout.newsitem, rssList);
-//    listView.setAdapter(adapter);
     listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
       @Override
       public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Intent intent = new Intent(getApplicationContext(), NewsActivity.class);
         String pageLink = ((TextView)view.findViewById(R.id.newslink)).getText().toString().trim();
         intent.putExtra("LINK", pageLink);
+
+        TextView titleView = view.findViewById(R.id.newstitle);
+        TextView dateView = view.findViewById(R.id.newsdate);
+        titleView.setTextColor(getResources().getColor(R.color.grey));
+        dateView.setTextColor(getResources().getColor(R.color.grey));
+        adapter.notifyDataSetChanged();
         startActivity(intent);
-        //Log.v("ha", pageLink);
       }
     });
     dataController = new RssDataController();
@@ -114,6 +115,7 @@ public class MainActivity extends AppCompatActivity {
         if(i < t) rssList.set(i, result.get(i));
         else rssList.add(result.get(i));
       }
+      //set adapter here
       adapter.notifyDataSetChanged();
     }
   }
