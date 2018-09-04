@@ -24,8 +24,9 @@ public class MainActivity extends AppCompatActivity {
   AlertDialog aboutDialog;
 
   //Code for data
-  ArrayList<RSSItem> rssList;
-  RSSAdapter adapter;
+  ArrayList<RSSItem> rssList = null;
+  ListView listView;
+  RSSAdapter adapter = null;
   RssDataController dataController;
   private final String url = "http://news.qq.com/newsgn/rss_newsgn.xml";
 
@@ -34,10 +35,10 @@ public class MainActivity extends AppCompatActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.newslist);
 
-    generateData(30);
-    ListView listView = findViewById(R.id.newslistView);
-    adapter = new RSSAdapter(this, R.layout.newsitem, rssList);
-    listView.setAdapter(adapter);
+//    generateData(30);
+    listView = findViewById(R.id.newslistView);
+//    adapter = new RSSAdapter(this, R.layout.newsitem, rssList);
+//    listView.setAdapter(adapter);
 
     dataController = new RssDataController();
     dataController.execute(url);
@@ -70,13 +71,6 @@ public class MainActivity extends AppCompatActivity {
     return super.onContextItemSelected(item);
   }
 
-  private void generateData(int n) {
-    rssList = new ArrayList<>();
-    for (int i = 0; i < n; i++) {
-      RSSItem tep = new RSSItem("This is the " + i + " post", "", new SimpleDateFormat("yyyy-mm-dd").format(new Date()));
-      rssList.add(tep);
-    }
-  }
   private class RssDataController extends AsyncTask<String, Integer, ArrayList<RSSItem>>{
     @Override
     protected ArrayList<RSSItem> doInBackground(String... params) {
@@ -98,9 +92,15 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onPostExecute(ArrayList<RSSItem> result) {
-      for (int i = 0; i < result.size(); i++) { //update data
-        rssList.set(i, result.get(i));
-        Log.v("ha", result.get(i).toString());
+      if(rssList == null) {
+        rssList = new ArrayList<>();
+        adapter = new RSSAdapter(MainActivity.this, R.layout.newsitem, rssList);
+        listView.setAdapter(adapter);
+      }
+      int t = rssList.size();
+      for(int i = 0; i < result.size(); i++) {
+        if(i < t) rssList.set(i, result.get(i));
+        else rssList.add(result.get(i));
       }
       adapter.notifyDataSetChanged();
     }

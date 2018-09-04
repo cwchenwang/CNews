@@ -46,7 +46,7 @@ public class RSSAdapter extends ArrayAdapter<RSSItem> {
       viewHolder = (ViewHolder) convertView.getTag();
     }
 
-    viewHolder.imageView.setImageResource(R.drawable.apple);
+    viewHolder.imageView.setImageResource(R.drawable.loading);
     viewHolder.titleView.setText(rssList.get(position).getTitle());
     viewHolder.dateView.setText(rssList.get(position).getPubDate());
 

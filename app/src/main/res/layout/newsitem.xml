@@ -12,7 +12,7 @@
         android:id="@+id/newspic"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:src="@drawable/apple"
+        android:src="@drawable/loading"
         android:scaleType="centerCrop"
         android:layout_marginRight="5dp"/>
 
