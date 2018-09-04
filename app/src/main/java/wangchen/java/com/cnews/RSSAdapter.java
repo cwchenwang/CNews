@@ -14,6 +14,7 @@ import java.util.ArrayList;
 
 class ViewHolder {
   ImageView imageView;
+  TextView urlView;
   TextView titleView;
   TextView dateView;
 }
@@ -41,6 +42,7 @@ public class RSSAdapter extends ArrayAdapter<RSSItem> {
               .findViewById(R.id.newstitle);
       viewHolder.dateView = (TextView) convertView
               .findViewById(R.id.newsdate);
+      viewHolder.urlView = (TextView) convertView.findViewById(R.id.newslink);
       convertView.setTag(viewHolder);
     } else {
       viewHolder = (ViewHolder) convertView.getTag();
@@ -49,7 +51,7 @@ public class RSSAdapter extends ArrayAdapter<RSSItem> {
     viewHolder.imageView.setImageResource(R.drawable.loading);
     viewHolder.titleView.setText(rssList.get(position).getTitle());
     viewHolder.dateView.setText(rssList.get(position).getPubDate());
-
+    viewHolder.urlView.setText(rssList.get(position).getLink());
     return convertView;
   }
 }

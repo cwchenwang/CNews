@@ -3,31 +3,34 @@ package wangchen.java.com.cnews;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.util.Log;
 import android.os.AsyncTask;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.content.Intent;
+import android.widget.TextView;
+import android.util.Log;
 
-import java.util.Date;
 import java.util.ArrayList;
 import java.io.InputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.net.MalformedURLException;
-import java.text.SimpleDateFormat;
+
 
 public class MainActivity extends AppCompatActivity {
   //Code for view
-  AlertDialog aboutDialog;
+  private AlertDialog aboutDialog;
+  private ListView listView;
 
   //Code for data
-  ArrayList<RSSItem> rssList = null;
-  ListView listView;
-  RSSAdapter adapter = null;
-  RssDataController dataController;
+  private ArrayList<RSSItem> rssList = null;
+  private RSSAdapter adapter = null;
+  private RssDataController dataController;
   private final String url = "http://news.qq.com/newsgn/rss_newsgn.xml";
 
   @Override
@@ -39,7 +42,16 @@ public class MainActivity extends AppCompatActivity {
     listView = findViewById(R.id.newslistView);
 //    adapter = new RSSAdapter(this, R.layout.newsitem, rssList);
 //    listView.setAdapter(adapter);
-
+    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+      @Override
+      public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Intent intent = new Intent(getApplicationContext(), NewsActivity.class);
+        String pageLink = ((TextView)view.findViewById(R.id.newslink)).getText().toString().trim();
+        intent.putExtra("LINK", pageLink);
+        startActivity(intent);
+        //Log.v("ha", pageLink);
+      }
+    });
     dataController = new RssDataController();
     dataController.execute(url);
   }
