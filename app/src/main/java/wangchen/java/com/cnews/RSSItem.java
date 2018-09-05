@@ -1,5 +1,7 @@
 package wangchen.java.com.cnews;
 
+import java.util.Comparator;
+
 public class RSSItem {
   private String title;
   private String author;
@@ -56,5 +58,14 @@ public class RSSItem {
   @Override
   public String toString() { // return json format of the rss item
     return "{title:" + title + ", description:" + description + ", link:" + link + ", author:" + author + ", date:" + pubDate + "}";
+  }
+}
+
+class SortByPubDate implements Comparator {
+  @Override
+  public int compare(Object o1, Object o2) {
+    RSSItem r1 = (RSSItem)o1;
+    RSSItem r2 = (RSSItem)o2;
+    return (r1.getPubDate().compareTo(r2.getPubDate()));
   }
 }

@@ -2,7 +2,7 @@
 CNews means see news, it is an android app developed by Clarence.
 
 ## To Do
-- [ ] Pull down to refresh
+- [x] Pull down to refresh
 - [x] Content View
 - [x] Already Read Grey
 - [ ] Image View
