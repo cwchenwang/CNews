@@ -12,7 +12,7 @@ import android.webkit.WebViewClient;
 import android.widget.Toast;
 import android.webkit.WebSettings;
 
-public class NewsActivity extends AppCompatActivity {
+public class NewsContentActivity extends AppCompatActivity {
 
   private WebView webView;
   private String url;
@@ -21,7 +21,7 @@ public class NewsActivity extends AppCompatActivity {
   protected void onCreate(Bundle savedInstanceState) {
 
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_newsitem);
+    setContentView(R.layout.activity_news_content);
     Intent in = getIntent();
     url = in.getStringExtra("LINK");
     if (TextUtils.isEmpty(url)) {

@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
     listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
       @Override
       public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Intent intent = new Intent(getApplicationContext(), NewsActivity.class);
+        Intent intent = new Intent(getApplicationContext(), NewsContentActivity.class);
         String pageLink = ((TextView)view.findViewById(R.id.newslink)).getText().toString().trim();
         intent.putExtra("LINK", pageLink);
 
