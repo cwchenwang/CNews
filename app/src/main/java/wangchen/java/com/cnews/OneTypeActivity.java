@@ -118,43 +118,43 @@ public class OneTypeActivity extends AppCompatActivity {
   }
 
     private class RefreshController extends AsyncTask<String, Integer, ArrayList<RSSItem>>{
-    @Override
-    protected ArrayList<RSSItem> doInBackground(String... params) {
-      String urlStr = params[0];
-      ArrayList<RSSItem> postDataList = new ArrayList<>();
-      try {
-        URL url = new URL(urlStr);
-        InputStream inputStream = url.openStream();
+      @Override
+      protected ArrayList<RSSItem> doInBackground(String... params) {
+        String urlStr = params[0];
+        ArrayList<RSSItem> postDataList = new ArrayList<>();
+        try {
+          URL url = new URL(urlStr);
+          InputStream inputStream = url.openStream();
 
-        RSSParser rssParser = new RSSParser(inputStream);
-        postDataList = rssParser.parseRSS();
-      } catch (MalformedURLException e) {
-        e.printStackTrace();
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-      return postDataList;
-    }
-
-    @Override
-    protected void onPostExecute(ArrayList<RSSItem> result) {
-      if(rssList == null) {
-        rssList = new ArrayList<>();
-        adapter = new RSSAdapter(OneTypeActivity.this, R.layout.newsitem, rssList);
-        listView.setAdapter(adapter);
-      }
-      int t = rssList.size();
-      if(t == result.size()) Toast.makeText(getApplicationContext(), "您的新闻已最新",Toast.LENGTH_SHORT).show();
-      else {
-        for (int i = 0; i < result.size(); i++) {
-          if (i < t) rssList.set(i, result.get(i));
-          else rssList.add(result.get(i));
+          RSSParser rssParser = new RSSParser(inputStream);
+          postDataList = rssParser.parseRSS();
+        } catch (MalformedURLException e) {
+          e.printStackTrace();
+        } catch (IOException e) {
+          e.printStackTrace();
         }
-        //set adapter here
-        adapter.notifyDataSetChanged();
-        int i = result.size() - t;
-        Toast.makeText(getApplicationContext(), "更新了" + i + "条新闻",Toast.LENGTH_SHORT).show();
+        return postDataList;
       }
-    }
+
+      @Override
+      protected void onPostExecute(ArrayList<RSSItem> result) {
+        if(rssList == null) {
+          rssList = new ArrayList<>();
+          adapter = new RSSAdapter(OneTypeActivity.this, R.layout.newsitem, rssList);
+          listView.setAdapter(adapter);
+        }
+        int t = rssList.size();
+        if(t == result.size()) Toast.makeText(getApplicationContext(), "您的新闻已最新",Toast.LENGTH_SHORT).show();
+        else {
+          for (int i = 0; i < result.size(); i++) {
+            if (i < t) rssList.set(i, result.get(i));
+            else rssList.add(result.get(i));
+          }
+          //set adapter here
+          adapter.notifyDataSetChanged();
+          int i = result.size() - t;
+          Toast.makeText(getApplicationContext(), "更新了" + i + "条新闻",Toast.LENGTH_SHORT).show();
+        }
+      }
   }
 }
