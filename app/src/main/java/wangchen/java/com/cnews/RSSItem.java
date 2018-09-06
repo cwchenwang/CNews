@@ -60,12 +60,3 @@ public class RSSItem {
     return "{title:" + title + ", description:" + description + ", link:" + link + ", author:" + author + ", date:" + pubDate + "}";
   }
 }
-
-class SortByPubDate implements Comparator {
-  @Override
-  public int compare(Object o1, Object o2) {
-    RSSItem r1 = (RSSItem)o1;
-    RSSItem r2 = (RSSItem)o2;
-    return (r1.getPubDate().compareTo(r2.getPubDate()));
-  }
-}

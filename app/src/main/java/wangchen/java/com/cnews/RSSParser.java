@@ -9,11 +9,11 @@ import org.xmlpull.v1.XmlPullParserFactory;
 
 import android.util.Log;
 
-enum RSSTAG {
-  TITLE, DATE, LINK, DESCRIPTION, GUID, AUTHOR, IGNORETAG
-}
-
 public class RSSParser {
+  private enum RSSTAG {
+    TITLE, DATE, LINK, DESCRIPTION, GUID, AUTHOR, IGNORETAG
+  }
+
   private RSSTAG currentTag;
   InputStream in;
 

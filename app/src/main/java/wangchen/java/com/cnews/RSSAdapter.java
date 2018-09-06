@@ -11,20 +11,19 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-
-class ViewHolder {
-  ImageView imageView;
-  TextView urlView;
-  TextView titleView;
-  TextView dateView;
-}
-
 public class RSSAdapter extends ArrayAdapter<RSSItem> {
   private final ArrayList<RSSItem> rssList;
 
   public RSSAdapter(Context context, int resource, ArrayList<RSSItem> objects) {
     super(context, resource, objects);
     rssList = objects;
+  }
+
+  private class ViewHolder {
+    ImageView imageView;
+    TextView urlView;
+    TextView titleView;
+    TextView dateView;
   }
 
   @Override
