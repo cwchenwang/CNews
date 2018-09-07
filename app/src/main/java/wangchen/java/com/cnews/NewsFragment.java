@@ -107,8 +107,11 @@ public class NewsFragment extends Fragment {
     protected void onPostExecute(ArrayList<RSSItem> result) {
       if (rssList == null) {
         rssList = new ArrayList<>();
-        adapter = new RSSAdapter(getActivity(), R.layout.newsitem, rssList);
-        listView.setAdapter(adapter);
+        if(getActivity() != null) {
+          adapter = new RSSAdapter(getActivity(), R.layout.newsitem, rssList);
+          listView.setAdapter(adapter);
+        }
+        else return;
       }
       int t = rssList.size();
       for (int i = 0; i < result.size(); i++) {

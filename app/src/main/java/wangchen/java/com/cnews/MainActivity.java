@@ -112,11 +112,6 @@ public class MainActivity extends AppCompatActivity {
           }
           i++;
         }
-//        for(int i = 0; i < 3; i++) {
-//          if(typeList.contains())) {
-//
-//          }
-//        }
         builder.setMultiChoiceItems(dialogItemList, dialogRes, new DialogInterface.OnMultiChoiceClickListener() {
           @Override
           public void onClick(DialogInterface dialog, int which, boolean isChecked) {
@@ -129,6 +124,7 @@ public class MainActivity extends AppCompatActivity {
           public void onClick(DialogInterface dialog, int which) {
             for(int i = 0; i < dialogRes.length; i++) {
               TypeName t = TypeName.getType(dialogItemList[i]);
+              if(t.getName().equals("推荐")) continue;
               if(dialogRes[i] == false) {
                 if(typeList.contains(t)) {
                   typeList.remove(t);
@@ -142,10 +138,6 @@ public class MainActivity extends AppCompatActivity {
                   for(int j = 0; j < typeList.size(); j++) {
                     Log.v("ha", typeList.get(j).toString());
                   }
-                  // viewPagerAdapter.typeList.add(t);
-//                  for(int j = 0; j < typeList.size(); j++) {
-//                    Log.v("ha", typeList.get(i).toString());
-//                  }
                 }
               }
             }
