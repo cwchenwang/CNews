@@ -74,8 +74,9 @@ public class NewsFragment extends Fragment {
       public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Intent intent = new Intent(getActivity().getApplicationContext(), NewsDetailActivity.class);
         String pageLink = ((TextView)view.findViewById(R.id.newslink)).getText().toString().trim();
-        intent.putExtra("LINK", pageLink);
-
+        String title = ((TextView)view.findViewById(R.id.newstitle)).getText().toString().trim();
+        String pubDate = ((TextView)view.findViewById(R.id.newsdate)).getText().toString().trim();
+        intent.putExtra("RSSITEM", new RSSItem(title, pageLink, pubDate));
         TextView titleView = view.findViewById(R.id.newstitle);
         TextView dateView = view.findViewById(R.id.newsdate);
         titleView.setTextColor(getResources().getColor(R.color.grey));

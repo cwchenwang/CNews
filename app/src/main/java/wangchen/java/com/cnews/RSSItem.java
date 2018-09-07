@@ -1,8 +1,8 @@
 package wangchen.java.com.cnews;
 
-import android.util.Log;
+import java.io.Serializable;
 
-public class RSSItem {
+public class RSSItem implements Serializable {
   private String title;
   private String author;
   private String link;

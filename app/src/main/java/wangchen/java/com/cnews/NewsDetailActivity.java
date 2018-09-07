@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.media.Image;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.webkit.WebResourceError;
@@ -22,6 +23,7 @@ public class NewsDetailActivity extends AppCompatActivity {
 
   private WebView webView;
   private String url;
+  private RSSItem rssItem;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +51,9 @@ public class NewsDetailActivity extends AppCompatActivity {
 //    });
 
     Intent in = getIntent();
-    url = in.getStringExtra("LINK");
+    rssItem = (RSSItem)in.getSerializableExtra("RSSITEM");
+    url = rssItem.getLink();
+
     if (TextUtils.isEmpty(url)) {
       Toast.makeText(getApplicationContext(), "URL ERROR", Toast.LENGTH_SHORT).show();
       finish();
@@ -70,18 +74,13 @@ public class NewsDetailActivity extends AppCompatActivity {
 
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
-
     switch (item.getItemId()){
-
       case R.id.backup:
         finish();
         break;
-
-//      case R.id.share:
-//
-//        share();
-//
-//        break;
+      case R.id.share:
+        share();
+        break;
 //
 //      case R.id.keep:
 //
@@ -108,6 +107,14 @@ public class NewsDetailActivity extends AppCompatActivity {
         break;
     }
     return true;
+  }
+
+  private void share() {
+    Intent shareIntent = new Intent();
+    shareIntent.setAction(Intent.ACTION_SEND);
+    shareIntent.setType("text/plain");
+    shareIntent.putExtra(Intent.EXTRA_TEXT, rssItem.getTitle() + "\n" + rssItem.getLink());
+    startActivity(Intent.createChooser(shareIntent, "选择分享的应用"));
   }
 
   private void initWebView() {
