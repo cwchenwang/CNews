@@ -4,5 +4,6 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="totalBlack">#000000</color>
+    <color name="colorHoloLight">#FFEEEEEE</color>
     <color name="grey">#737373</color>/>
 </resources>

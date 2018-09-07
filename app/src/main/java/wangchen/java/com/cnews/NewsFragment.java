@@ -72,7 +72,7 @@ public class NewsFragment extends Fragment {
     listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
       @Override
       public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Intent intent = new Intent(getActivity().getApplicationContext(), NewsContentActivity.class);
+        Intent intent = new Intent(getActivity().getApplicationContext(), NewsDetailActivity.class);
         String pageLink = ((TextView)view.findViewById(R.id.newslink)).getText().toString().trim();
         intent.putExtra("LINK", pageLink);
 

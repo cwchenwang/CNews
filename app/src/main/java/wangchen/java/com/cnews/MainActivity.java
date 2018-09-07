@@ -10,6 +10,8 @@ import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.ArrayAdapter;
 import android.support.design.widget.Snackbar;
+import android.content.Intent;
+import android.widget.ImageButton;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.ViewPager;
@@ -23,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
   private TabLayout tabLayout;
   private ViewPager viewPager;
   private ViewPagerAdapter viewPagerAdapter;
+  private ImageButton imageButton;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -34,5 +37,14 @@ public class MainActivity extends AppCompatActivity {
     viewPager.setAdapter(viewPagerAdapter);
     tabLayout = findViewById(R.id.tablayout);
     tabLayout.setupWithViewPager(viewPager);
+
+//    imageButton = findViewById(R.id.typeManager);
+//    imageButton.setOnClickListener(new View.OnClickListener() {
+//      @Override
+//      public void onClick(View v) {
+//        Intent intent = new Intent(MainActivity.this, TypeActivity.class);
+//
+//      }
+//    });
   }
 }

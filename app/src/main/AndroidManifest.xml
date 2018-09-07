@@ -20,9 +20,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".NewsContentActivity"
+        <activity android:name=".NewsDetailActivity"
                   android:parentActivityName=".MainActivity"
-                  android:theme="@style/AppTheme.Base">
+                  android:theme="@style/NoActionBar">
         </activity>
 
     </application>

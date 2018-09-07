@@ -2,6 +2,7 @@ package wangchen.java.com.cnews;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -12,8 +13,12 @@ import android.webkit.WebViewClient;
 import android.widget.Toast;
 import android.webkit.WebSettings;
 import android.support.v7.widget.Toolbar;
+import android.widget.ImageButton;
+import android.view.View;
+import android.view.MenuItem;
+import android.view.Menu;
 
-public class NewsContentActivity extends AppCompatActivity {
+public class NewsDetailActivity extends AppCompatActivity {
 
   private WebView webView;
   private String url;
@@ -22,10 +27,26 @@ public class NewsContentActivity extends AppCompatActivity {
   protected void onCreate(Bundle savedInstanceState) {
 
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_news_content);
+    setContentView(R.layout.activity_news_detail);
 
-    Toolbar mToolbarTb = (Toolbar)findViewById(R.id.tb_toolbar);
-    setSupportActionBar(mToolbarTb);
+    Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_news_detail);
+    setSupportActionBar(toolbar);
+//    ImageButton imageButton = findViewById(R.id.finishButton);
+//
+//    imageButton.setOnClickListener(new View.OnClickListener() {
+//      @Override
+//      public void onClick(View v) {
+//        finish();
+//      }
+//    });
+
+//    Toolbar mToolbarTb = findViewById(R.id.toolbar);
+//    mToolbarTb.setNavigationOnClickListener(new View.OnClickListener() {
+//      @Override
+//      public void onClick(View v){
+//      finish();
+//    }
+//    });
 
     Intent in = getIntent();
     url = in.getStringExtra("LINK");
@@ -38,6 +59,55 @@ public class NewsContentActivity extends AppCompatActivity {
       initWebView();
       webView.loadUrl(url);
     }
+  }
+
+  @Override
+  public boolean onCreateOptionsMenu(Menu menu) {
+
+    getMenuInflater().inflate(R.menu.menu_newsdetail, menu);
+    return true;
+  }
+
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+
+    switch (item.getItemId()){
+
+      case R.id.backup:
+        finish();
+        break;
+
+//      case R.id.share:
+//
+//        share();
+//
+//        break;
+//
+//      case R.id.keep:
+//
+//        mUserKeep();
+//
+//        break;
+//
+//      case R.id.photo:
+//
+//        takeScreenShot(this);
+//
+//        Intent intent=new Intent(this,ScreenCutActivity.class);
+//        startActivity(intent);
+//
+//        break;
+//
+//      case R.id.text_size:
+//
+//        textSizeDialog();
+//
+//        break;
+
+      default:
+        break;
+    }
+    return true;
   }
 
   private void initWebView() {
