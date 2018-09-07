@@ -140,16 +140,17 @@ public class MainActivity extends AppCompatActivity {
                 {
                   typeList.add(t);
                   for(int j = 0; j < typeList.size(); j++) {
-                    Log.v("ha", typeList.get(i).toString());
+                    Log.v("ha", typeList.get(j).toString());
                   }
-                 // viewPagerAdapter.typeList.add(t);
-                  for(int j = 0; j < typeList.size(); j++) {
-                    Log.v("ha", typeList.get(i).toString());
-                  }
+                  // viewPagerAdapter.typeList.add(t);
+//                  for(int j = 0; j < typeList.size(); j++) {
+//                    Log.v("ha", typeList.get(i).toString());
+//                  }
                 }
               }
             }
             viewPagerAdapter.notifyDataSetChanged();
+            viewPager.setCurrentItem(0);
             dialog.dismiss();
           }
         });

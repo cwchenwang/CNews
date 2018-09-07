@@ -72,6 +72,6 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
     return POSITION_NONE;
   }
 
-  @Override
-  public void destroyItem(ViewGroup container, int position, Object object) {}
+//  @Override
+//  public void destroyItem(ViewGroup container, int position, Object object) {}
 }
