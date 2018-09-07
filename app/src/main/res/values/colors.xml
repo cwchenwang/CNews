@@ -5,5 +5,7 @@
     <color name="colorAccent">#FF4081</color>
     <color name="totalBlack">#000000</color>
     <color name="colorHoloLight">#FFEEEEEE</color>
-    <color name="grey">#737373</color>/>
+    <color name="grey">#737373</color>
+    <color name="red">#CC0033</color>
+    <color name="violet">#7C1F8C</color>
 </resources>
