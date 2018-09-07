@@ -1,8 +1,10 @@
 package wangchen.java.com.cnews;
 
+import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.support.annotation.Nullable;
 import android.view.View;
@@ -25,11 +27,22 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.SpinnerAdapter;
 import android.support.v4.widget.DrawerLayout;
 import android.support.design.widget.NavigationView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import static android.support.v4.view.PagerAdapter.POSITION_NONE;
+
 public class MainActivity extends AppCompatActivity {
-  private ArrayList<String> listData = new ArrayList<>();
+  private ArrayList<TypeName> typeList = new ArrayList<TypeName>() {{
+    for(TypeName typeName : TypeName.values()) {
+      add(typeName);
+    }
+  }};
+
+  final String dialogItemList[] = new String[TypeName.values().length];
+
+  private boolean dialogRes[] = new boolean[TypeName.values().length];
 
   private TabLayout tabLayout;
   private ViewPager viewPager;
@@ -37,13 +50,16 @@ public class MainActivity extends AppCompatActivity {
   private ImageButton imageButton;
   private Toolbar toolbar;
   private DrawerLayout mDrawerLayout;
+  private AlertDialog.Builder builder;
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
 
+
     viewPager = (ViewPager)findViewById(R.id.viewPager);
-    viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
+    viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), typeList);
     viewPager.setAdapter(viewPagerAdapter);
     tabLayout = findViewById(R.id.tablayout);
     tabLayout.setupWithViewPager(viewPager);
@@ -75,14 +91,73 @@ public class MainActivity extends AppCompatActivity {
     ActionBar actionBar = getSupportActionBar();
     actionBar.setDisplayHomeAsUpEnabled(true);
     actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_black_24dp);
-//    imageButton = findViewById(R.id.typeManager);
-//    imageButton.setOnClickListener(new View.OnClickListener() {
-//      @Override
-//      public void onClick(View v) {
-//        Intent intent = new Intent(MainActivity.this, TypeActivity.class);
+
+
+    builder = new AlertDialog.Builder(this);
+    int i = 0;
+    for(TypeName typeName : TypeName.values()) {
+      dialogItemList[i] = typeName.getName();
+      dialogRes[i] = false;
+      i++;
+    }
+
+    imageButton = findViewById(R.id.typeManager);
+    imageButton.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        int i = 0;
+        for(TypeName typeName : TypeName.values()) {
+          if(typeList.contains(typeName)) {
+            dialogRes[i] = true;
+          }
+          i++;
+        }
+//        for(int i = 0; i < 3; i++) {
+//          if(typeList.contains())) {
 //
-//      }
-//    });
+//          }
+//        }
+        builder.setMultiChoiceItems(dialogItemList, dialogRes, new DialogInterface.OnMultiChoiceClickListener() {
+          @Override
+          public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+            dialogRes[which] = isChecked;
+          }
+        });
+
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+          @Override
+          public void onClick(DialogInterface dialog, int which) {
+            for(int i = 0; i < dialogRes.length; i++) {
+              TypeName t = TypeName.getType(dialogItemList[i]);
+              if(dialogRes[i] == false) {
+                if(typeList.contains(t)) {
+                  typeList.remove(t);
+                  //viewPagerAdapter.typeList.remove(t);
+                }
+              }
+              else {
+                if(typeList.contains(t) == false)
+                {
+                  typeList.add(t);
+                  for(int j = 0; j < typeList.size(); j++) {
+                    Log.v("ha", typeList.get(i).toString());
+                  }
+                 // viewPagerAdapter.typeList.add(t);
+                  for(int j = 0; j < typeList.size(); j++) {
+                    Log.v("ha", typeList.get(i).toString());
+                  }
+                }
+              }
+            }
+            viewPagerAdapter.notifyDataSetChanged();
+            dialog.dismiss();
+          }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+      }
+    });
+
   }
 
   @Override

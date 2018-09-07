@@ -33,12 +33,15 @@ public class NewsFragment extends Fragment {
   private RssDataController rssDataController;
   private RefreshController refreshController;
 
+  private String tag = "tag";
   private String sourceUrl;
   private boolean loadingData = true;
-  public static NewsFragment newInstance(String sourceStr) {
+
+  public static NewsFragment newInstance(String sourceStr, String tag) {
     NewsFragment newsFragment = new NewsFragment();
     Bundle bundle = new Bundle();
     bundle.putString("SOURCEURL", sourceStr);
+    bundle.putString("TAG", tag); //the type of this fragment
     newsFragment.setArguments(bundle);
     return newsFragment;
   }
@@ -48,7 +51,10 @@ public class NewsFragment extends Fragment {
     View view = inflater.inflate(R.layout.newslist, container, false);
     listView = view.findViewById(R.id.newslistView);
     swipeView = view.findViewById(R.id.swipe_refresh_layout);
+
     sourceUrl = getArguments().getString("SOURCEURL");
+    tag = getArguments().getString("TAG");
+
     rssDataController = new RssDataController();
     rssDataController.execute(sourceUrl);
 
@@ -77,6 +83,7 @@ public class NewsFragment extends Fragment {
         String title = ((TextView)view.findViewById(R.id.newstitle)).getText().toString().trim();
         String pubDate = ((TextView)view.findViewById(R.id.newsdate)).getText().toString().trim();
         intent.putExtra("RSSITEM", new RSSItem(title, pageLink, pubDate));
+
         TextView titleView = view.findViewById(R.id.newstitle);
         TextView dateView = view.findViewById(R.id.newsdate);
         titleView.setTextColor(getResources().getColor(R.color.grey));

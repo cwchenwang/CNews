@@ -1,7 +1,12 @@
 package wangchen.java.com.cnews;
 
+
 import java.util.HashMap;
+import java.util.ArrayList;
+
+
 public final class Constants {
+
   public static final HashMap<String, String> NEWSCATEGORY = new HashMap<String, String>() {{
       NEWSCATEGORY.put("国内新闻", "http://news.qq.com/newsgn/rss_newsgn.xml");
       NEWSCATEGORY.put("教育", "http://edu.qq.com/gaokao/rss_gaokao.xml");

@@ -81,28 +81,8 @@ public class NewsDetailActivity extends AppCompatActivity {
       case R.id.share:
         share();
         break;
-//
-//      case R.id.keep:
-//
-//        mUserKeep();
-//
-//        break;
-//
-//      case R.id.photo:
-//
-//        takeScreenShot(this);
-//
-//        Intent intent=new Intent(this,ScreenCutActivity.class);
-//        startActivity(intent);
-//
-//        break;
-//
-//      case R.id.text_size:
-//
-//        textSizeDialog();
-//
-//        break;
 
+        //TODO add collections
       default:
         break;
     }
