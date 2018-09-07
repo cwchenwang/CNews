@@ -4,6 +4,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.view.ViewGroup;
+import java.util.HashMap;
 
 public class ViewPagerAdapter extends FragmentPagerAdapter {
 
@@ -26,12 +27,15 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
     {
       fragment = NewsFragment.newInstance("http://tech.qq.com/web/rss_web.xml");
     }
+    else if(position == 3) {
+      fragment = NewsFragment.newInstance("http://rss.sina.com.cn/news/china/focus15.xml");
+    }
     return fragment;
   }
 
   @Override
   public int getCount() {
-    return 3;
+    return 4;
   }
 
   @Override
@@ -48,6 +52,9 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
     else if (position == 2)
     {
       title = "电影";
+    }
+    else if(position == 3) {
+      title = "新浪";
     }
     return title;
   }

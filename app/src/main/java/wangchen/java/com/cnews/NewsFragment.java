@@ -65,7 +65,6 @@ public class NewsFragment extends Fragment {
                 //Toast.makeText(getActivity().getApplicationContext(), "您的新闻已最新", Toast.LENGTH_SHORT).show();
                 refreshController = new RefreshController();
                 refreshController.execute(sourceUrl);
-                swipeView.setRefreshing(false);
               }
             }
     );
@@ -122,19 +121,24 @@ public class NewsFragment extends Fragment {
 
     @Override
     protected void onPostExecute(ArrayList<RSSItem> result) {
-      int t = rssList.size();
-      if (t == result.size())
+      int cnt = 0;
+      for(RSSItem item : result) {
+        if(rssList.contains(item)) {
+          continue;
+        }
+        else {
+          rssList.add(0, item);
+          cnt++;
+        }
+      }
+      if(cnt == 0)
         Toast.makeText(getActivity().getApplicationContext(), "您的新闻已最新", Toast.LENGTH_SHORT).show();
       else {
-        for (int i = 0; i < result.size(); i++) {
-          if (i < t) rssList.set(i, result.get(i));
-          else rssList.add(result.get(i));
-        }
         //set adapter here
         adapter.notifyDataSetChanged();
-        int i = result.size() - t;
-        Toast.makeText(getActivity().getApplicationContext(), "更新了" + i + "条新闻", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity().getApplicationContext(), "更新了" + cnt + "条新闻", Toast.LENGTH_SHORT).show();
       }
+      swipeView.setRefreshing(false);
     }
   }
 

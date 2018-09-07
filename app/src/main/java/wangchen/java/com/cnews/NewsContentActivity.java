@@ -11,6 +11,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
 import android.webkit.WebSettings;
+import android.support.v7.widget.Toolbar;
 
 public class NewsContentActivity extends AppCompatActivity {
 
@@ -22,6 +23,10 @@ public class NewsContentActivity extends AppCompatActivity {
 
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_news_content);
+
+    Toolbar mToolbarTb = (Toolbar)findViewById(R.id.tb_toolbar);
+    setSupportActionBar(mToolbarTb);
+
     Intent in = getIntent();
     url = in.getStringExtra("LINK");
     if (TextUtils.isEmpty(url)) {

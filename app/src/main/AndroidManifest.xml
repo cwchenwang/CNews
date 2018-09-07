@@ -21,11 +21,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".NewsContentActivity"
-                  android:parentActivityName=".OneTypeActivity">
+                  android:parentActivityName=".MainActivity"
+                  android:theme="@style/AppTheme.Base">
         </activity>
-        <activity android:name=".OneTypeActivity"
-            android:parentActivityName=".MainActivity">
-        </activity>
+
     </application>
 
 </manifest>

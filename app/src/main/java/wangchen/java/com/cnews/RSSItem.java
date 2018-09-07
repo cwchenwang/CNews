@@ -1,6 +1,6 @@
 package wangchen.java.com.cnews;
 
-import java.util.Comparator;
+import android.util.Log;
 
 public class RSSItem {
   private String title;
@@ -9,6 +9,7 @@ public class RSSItem {
   private String description;
   private String pubDate;
   private String guid;
+  private String image = "";
 
   public RSSItem() {
 
@@ -19,6 +20,10 @@ public class RSSItem {
     this.pubDate = pubDate;
   }
 
+  public String getImage() {
+    image = ImageFetcher.FetchImage(link);
+    return image;
+  }
   public String getTitle() {
     return title;
   }
@@ -55,8 +60,27 @@ public class RSSItem {
   public void setGuid(String guid) {
     this.guid = guid;
   }
+  public boolean hasImage() {
+    if(image.length() > 0) return true;
+    return false;
+  }
   @Override
   public String toString() { // return json format of the rss item
-    return "{title:" + title + ", description:" + description + ", link:" + link + ", author:" + author + ", date:" + pubDate + "}";
+    return "{title:" + title + ", description:" + description + ", link:" + link + ", author:" + author + ", image:" + image + ", date:" + pubDate + "}";
+  }
+
+  @Override
+  public int hashCode() {
+    return 1;
+  }
+
+  @Override
+  public boolean equals(Object v) {
+    boolean res = false;
+    if(v instanceof RSSItem) {
+      RSSItem ptr = (RSSItem)v;
+      res = this.toString().equals(ptr.toString());
+    }
+    return res;
   }
 }
