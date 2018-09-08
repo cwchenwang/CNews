@@ -22,7 +22,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 public class RSSAdapter extends ArrayAdapter<RSSItem> {
-  private final ArrayList<RSSItem> rssList;
+  ArrayList<RSSItem> rssList;
 
   public RSSAdapter(Context context, int resource, ArrayList<RSSItem> objects) {
     super(context, resource, objects);
@@ -83,6 +83,16 @@ public class RSSAdapter extends ArrayAdapter<RSSItem> {
     //viewHolder.link = link;
     viewHolder.item = rssList.get(position);
 
+    if(rssList.get(position).haveRead()) {
+      Log.v("setgrey", position+"");
+      viewHolder.titleView.setTextColor(this.getContext().getResources().getColor(R.color.grey));
+      viewHolder.dateView.setTextColor(this.getContext().getResources().getColor(R.color.grey));
+    }
+    else { //must set color again here, or listview won't update its changed color
+      Log.v("setblack", position+"");
+      viewHolder.titleView.setTextColor(this.getContext().getResources().getColor(R.color.totalBlack));
+      viewHolder.dateView.setTextColor(this.getContext().getResources().getColor(R.color.totalBlack));
+    }
     //new DownloadAsyncTask().execute(viewHolder);
     return convertView;
   }

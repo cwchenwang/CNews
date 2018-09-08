@@ -10,6 +10,8 @@ public class RSSItem implements Serializable {
   private String pubDate;
   private String guid;
   private String image = "";
+  private boolean read = false;
+  private boolean isCollected = false;
 
   public RSSItem() {
 
@@ -42,6 +44,13 @@ public class RSSItem implements Serializable {
   public String getGuid() {
     return guid;
   }
+  public boolean haveRead() {
+    return read;
+  }
+  public boolean judgeCollect() {
+    return isCollected;
+  }
+
   public void setTitle(String title) {
     this.title = title;
   }
@@ -59,6 +68,18 @@ public class RSSItem implements Serializable {
   }
   public void setGuid(String guid) {
     this.guid = guid;
+  }
+  public void setRead() {
+    read = true;
+  }
+  public void setCollected() {
+    isCollected = true;
+  }
+  public void unCollect() {
+    isCollected = false;
+  }
+  public void unRead() {
+    read = false;
   }
   public boolean hasImage() {
     if(image.length() > 0) return true;

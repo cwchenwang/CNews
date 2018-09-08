@@ -69,6 +69,10 @@ public class NewsDetailActivity extends AppCompatActivity {
   public boolean onCreateOptionsMenu(Menu menu) {
 
     getMenuInflater().inflate(R.menu.menu_newsdetail, menu);
+//    if(rssItem.judgeCollect()) {
+//      MenuItem item = findViewById(R.id.keep);
+//      item.setIcon(R.drawable.keeped);
+//    }
     return true;
   }
 
@@ -78,11 +82,19 @@ public class NewsDetailActivity extends AppCompatActivity {
       case R.id.backup:
         finish();
         break;
+
       case R.id.share:
         share();
         break;
 
+      case R.id.keep:
+        if(rssItem.judgeCollect()) {
+          rssItem.unCollect();
+          item.setIcon(R.drawable.keep);
+        }
+        collect();
         //TODO add collections
+
       default:
         break;
     }
@@ -95,6 +107,16 @@ public class NewsDetailActivity extends AppCompatActivity {
     shareIntent.setType("text/plain");
     shareIntent.putExtra(Intent.EXTRA_TEXT, rssItem.getTitle() + "\n" + rssItem.getLink());
     startActivity(Intent.createChooser(shareIntent, "选择分享的应用"));
+  }
+
+  private void collect() {
+    if(rssItem.judgeCollect()) {
+      rssItem.unCollect();
+      //TODO 数据库
+    }
+    else {
+      rssItem.setCollected();
+    }
   }
 
   private void initWebView() {

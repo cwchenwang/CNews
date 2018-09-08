@@ -82,12 +82,15 @@ public class NewsFragment extends Fragment {
         String pageLink = ((TextView)view.findViewById(R.id.newslink)).getText().toString().trim();
         String title = ((TextView)view.findViewById(R.id.newstitle)).getText().toString().trim();
         String pubDate = ((TextView)view.findViewById(R.id.newsdate)).getText().toString().trim();
-        intent.putExtra("RSSITEM", new RSSItem(title, pageLink, pubDate));
+
+        intent.putExtra("RSSITEM", rssList.get(position));
 
         TextView titleView = view.findViewById(R.id.newstitle);
         TextView dateView = view.findViewById(R.id.newsdate);
-        titleView.setTextColor(getResources().getColor(R.color.grey));
-        dateView.setTextColor(getResources().getColor(R.color.grey));
+
+        rssList.get(position).setRead();
+//        titleView.setTextColor(getResources().getColor(R.color.grey));
+//        dateView.setTextColor(getResources().getColor(R.color.grey));
         adapter.notifyDataSetChanged();
         startActivity(intent);
       }
@@ -115,6 +118,7 @@ public class NewsFragment extends Fragment {
       }
       int t = rssList.size();
       for (int i = 0; i < result.size(); i++) {
+        if(i >= 10) break;
         if (i < t) rssList.set(i, result.get(i));
         else rssList.add(result.get(i));
         Log.v("Data loaded", result.get(i).toString());
@@ -134,6 +138,7 @@ public class NewsFragment extends Fragment {
     protected void onPostExecute(ArrayList<RSSItem> result) {
       int cnt = 0;
       for(RSSItem item : result) {
+        Log.v("result", item.toString());
         if(rssList.contains(item)) {
           continue;
         }
@@ -142,11 +147,24 @@ public class NewsFragment extends Fragment {
           cnt++;
         }
       }
+
+      adapter.rssList = rssList; //重新指向，避免出错
+      adapter.notifyDataSetChanged();
+
+
+//      for(int i = 0; i < adapter.rssList.size(); i++) {
+//        Log.v(i+"", adapter.rssList.get(i).toString());
+//        if(adapter.rssList.get(i).haveRead()) {
+//          Log.v("read", i+"");
+//        }
+//        else Log.v("not read", i+"");
+//      }
+
       if(cnt == 0)
         Toast.makeText(getActivity().getApplicationContext(), "您的新闻已最新", Toast.LENGTH_SHORT).show();
       else {
         //set adapter here
-        adapter.notifyDataSetChanged();
+        //adapter.notifyDataSetChanged();
         Toast.makeText(getActivity().getApplicationContext(), "更新了" + cnt + "条新闻", Toast.LENGTH_SHORT).show();
       }
       swipeView.setRefreshing(false);
