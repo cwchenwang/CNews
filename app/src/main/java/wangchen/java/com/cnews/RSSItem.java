@@ -1,6 +1,13 @@
 package wangchen.java.com.cnews;
 
+import android.util.Log;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Serializable;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 public class RSSItem implements Serializable {
   private String title;
@@ -73,6 +80,9 @@ public class RSSItem implements Serializable {
   public void setRead() {
     read = true;
   }
+  public void setUnread() {
+    read = false;
+  }
 
   public void setCollected() {
     isCollected = true;
@@ -92,9 +102,35 @@ public class RSSItem implements Serializable {
     return false;
   }
 
+  public String getHTML() {
+    String res = "";
+    Log.v("url", this.link);
+    if(link.substring(0, 4).equals("http")) {
+      link = "https" + link.substring(4);
+    }
+    try {
+      URL url = new URL(link);
+      BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
+      String line;
+      while((line = reader.readLine()) != null) {
+        res += line;
+      }
+    } catch(MalformedURLException e) {
+      Log.e("Geting html", "url malformed");
+    } catch(IOException e) {
+      Log.e("io", "error");
+    }
+    return res;
+  }
+
   @Override
   public String toString() { // return json format of the rss item
-    return "{title:" + title + ", description:" + description + ", link:" + link + ", author:" + author + ", image:" + image + ", date:" + pubDate + "}";
+    int t = 0;
+    if(read == true) t = 1;
+//    return "{title:" + title + ", description:" + description + ", link:" + link +
+//            ", author:" + author + ", read:" + t + ", image:" + image + ", date:" + pubDate + "}";
+    return "{title:" + title + ", link:" + link +
+            ", author:" + author + ", read:" + t + ", image:" + image + ", date:" + pubDate + "}";
   }
 
   @Override

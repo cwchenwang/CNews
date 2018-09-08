@@ -112,7 +112,7 @@ public class NewsFragment extends Fragment {
       if (rssList == null) {
         rssList = new ArrayList<>();
         if(getActivity() != null) {
-          adapter = new RSSAdapter(getActivity(), R.layout.newsitem, rssList);
+          adapter = new RSSAdapter(getActivity(), R.layout.item, rssList);
           listView.setAdapter(adapter);
         }
         else return;
@@ -122,7 +122,7 @@ public class NewsFragment extends Fragment {
         if(i >= 10) break;
         if (i < t) rssList.set(i, result.get(i));
         else rssList.add(result.get(i));
-        Log.v("Data loaded", result.get(i).toString());
+        //Log.v("Data loaded", result.get(i).toString());
       }
       adapter.notifyDataSetChanged();
       loadingData = false;
@@ -161,8 +161,11 @@ public class NewsFragment extends Fragment {
 //        else Log.v("not read", i+"");
 //      }
 
-      if(cnt == 0)
+      if(cnt == 0 && rssList.size() > 0)
         Toast.makeText(getActivity().getApplicationContext(), "您的新闻已最新", Toast.LENGTH_SHORT).show();
+      else if(rssList.size() == 0) {
+        Toast.makeText(getActivity().getApplicationContext(), "网络似乎出了些问题哦", Toast.LENGTH_SHORT).show();
+      }
       else {
         //set adapter here
         //adapter.notifyDataSetChanged();

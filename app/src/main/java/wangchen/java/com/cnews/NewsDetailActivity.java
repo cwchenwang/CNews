@@ -1,6 +1,10 @@
 package wangchen.java.com.cnews;
 
+import wangchen.java.com.cnews.db.NewsDBHelper;
+
+import android.content.Context;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.media.Image;
 import android.os.Bundle;
@@ -19,6 +23,15 @@ import android.widget.ImageButton;
 import android.view.View;
 import android.view.MenuItem;
 import android.view.Menu;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
 
 public class NewsDetailActivity extends AppCompatActivity {
 
@@ -125,16 +138,136 @@ public class NewsDetailActivity extends AppCompatActivity {
   }
 
   private void collect(MenuItem item) {
-    if(rssItem.judgeCollect()) {
+    final NewsDBHelper db = ((CNewsApp)getApplicationContext()).getDB();
+    if(rssItem.judgeCollect()) {  //取消收藏
       item.setIcon(R.drawable.keep);
       Toast.makeText(this, "已取消收藏", Toast.LENGTH_SHORT).show();
-      //TODO 数据库
+
+      new Thread(new Runnable() {
+        @Override
+        public void run() {
+          Log.v("db", "starting db");
+          db.removeItem(rssItem);
+          ArrayList<RSSItem> rsslist = db.retriveCollections();
+          for(int i=0; i < rsslist.size(); i++)
+          Log.v("rss", rsslist.get(i).toString());
+        }
+      }) {
+      }.start();
+
     }
-    else {
+    else {  //进行收藏
       item.setIcon(R.drawable.keeped);
       Toast.makeText(this, "已添加收藏", Toast.LENGTH_SHORT).show();
+
+      new Thread(new Runnable() {
+        @Override
+        public void run() {
+          Log.v("db", "starting db");
+          db.collectItem(rssItem);
+          ArrayList<RSSItem> rsslist = db.retriveCollections();
+          for(int i=0; i < rsslist.size(); i++)
+            Log.v("rss", rsslist.get(i).toString());
+        }
+      }) {
+      }.start();
+
     }
     rssItem.changeCollect();
+
+    Log.v("db", "db");
+
+//    new Thread(new Runnable() {
+//      @Override
+//      public void run() {
+//        String fileName = rssItem.getTitle() + ".html";
+//        String html = rssItem.getHTML();
+//        try {
+//          FileWriter fw = new FileWriter(fileName, true);
+//          Log.v("thml", html);
+//          fw.write(html);
+//          fw.close();
+//        } catch(IOException e) {
+//          Log.e("IO", "IO error in writing html");
+//        }
+////        String html = rssItem.getHTML();
+////        String path = getApplicationContext().getFilesDir().getAbsolutePath();
+////        path = path + File.separator + "collections" + File.separator;
+////        String fileName = path + "helloworld.html";
+////        Log.v("filepath", fileName);
+////        try {
+////          FileWriter fw = new FileWriter(fileName, true);
+////          fw.write(html);
+////          fw.close();
+////        } catch(IOException e) {
+////          Log.e("IO", "IO error in writing html");
+////        }
+//        String filename = rssItem.getTitle() + ".html";
+//        Log.v("ha", filename);
+//        String fileContents = rssItem.getHTML();
+//        FileOutputStream outputStream;
+//
+//        try {
+//          outputStream = openFileOutput(filename, Context.MODE_WORLD_READABLE);
+//          outputStream.write(fileContents.getBytes());
+//          outputStream.close();
+//        } catch (Exception e) {
+//          e.printStackTrace();
+//        }
+//
+//
+//      File directory = getApplicationContext().getFilesDir();
+//        Log.v("ha", getApplicationContext().getFilesDir().getAbsolutePath());
+//      File file = new File(getApplicationContext().getFilesDir().getAbsolutePath(), filename);
+//      try {
+//        BufferedReader reader = new BufferedReader(new FileReader(file));
+//        String res = "", line;
+//        while((line = reader.readLine()) != null) {
+//          res += line;
+//        }
+//        Log.v("f", res);
+//        Log.v("ha", "hello world");
+//      } catch(IOException e) {
+//        Log.e("ha", "error");
+//      }
+//      }
+//
+
+//    File directory = getApplicationContext().getFilesDir();
+//    File file = new File(directory, filename);
+//    try {
+//      BufferedReader reader = new BufferedReader(new FileReader(file));
+//      Log.v("f", reader.readLine());
+//      Log.v("ha", "hello world");
+//    } catch(IOException e) {
+//      Log.e("ha", "error");
+//    }
+
+//    new Thread(new Runnable() {
+//      @Override
+//      public void run() {
+//        db.handleCollect(rssItem.getTitle(), rssItem.getHTML(), rssItem.judgeCollect());
+//      }
+//    }) {
+//    }.start();
+//    new Thread(new Runnable() {
+//      @Override
+//      public void run() {
+//        db.handleCollect(rssItem.getTitle(), rssItem.getHTML(), rssItem.judgeCollect());
+//      }
+//    }) {
+//    }.start();
+//    //db.handleCollect(rssItem.getTitle(), rssItem.getHTML(), rssItem.judgeCollect());
+//    //Log.v("error", "database error");
+//
+//    new Thread(new Runnable() {
+//      @Override
+//      public void run() {
+//        db.retrieveCollect();
+//      }
+//    }) {
+//    }.start();
+
   }
 
   private void initWebView() {

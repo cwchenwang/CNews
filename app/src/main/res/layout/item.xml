@@ -1,0 +1,44 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingTop="5dp"
+    android:paddingBottom="5dp">
+
+    <TextView
+        android:id="@+id/newslink"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:focusable="false"/>
+
+    <TextView
+        android:id="@+id/newstitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@id/newspic"
+        android:layout_toRightOf="@id/newspic"
+        android:maxLines="2"
+        android:text="This is a good Post, I hope it will have 2 lines. Please give me 2 lines"
+        android:textIsSelectable="false"
+        android:textSize="16sp"
+        android:ellipsize="end"
+        android:textColor="@color/totalBlack"
+        android:focusable="false"/>
+
+    <TextView
+        android:id="@+id/newsdate"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignBottom="@id/newspic"
+        android:layout_toRightOf="@id/newspic"
+        android:maxLines="1"
+        android:text="April 12, 2013"
+        android:textSize="12sp"
+        android:textColor="@color/totalBlack"
+        android:focusable="false"/>
+</RelativeLayout>

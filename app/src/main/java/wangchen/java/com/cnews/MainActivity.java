@@ -76,8 +76,14 @@ public class MainActivity extends AppCompatActivity {
             new NavigationView.OnNavigationItemSelectedListener() {
               @Override
               public boolean onNavigationItemSelected(MenuItem menuItem) {
+                int id = menuItem.getItemId();
+                if(id == R.id.nav_collections) {
+                  Intent intent = new Intent(getApplicationContext(), NewsCollectActivity.class);
+                  startActivity(intent);
+                }
+
                 // set item as selected to persist highlight
-                menuItem.setChecked(true);
+                //menuItem.setChecked(true);
                 // close drawer when item is tapped
                 mDrawerLayout.closeDrawers();
 
@@ -136,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
                 {
                   typeList.add(t);
                   for(int j = 0; j < typeList.size(); j++) {
-                    Log.v("ha", typeList.get(j).toString());
+                    //Log.v("ha", typeList.get(j).toString());
                   }
                 }
               }

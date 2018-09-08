@@ -47,8 +47,8 @@ public class RSSAdapter extends ArrayAdapter<RSSItem> {
       convertView = inflater.inflate(R.layout.newsitem, null);
 
       viewHolder = new ViewHolder();
-      viewHolder.imageView = (ImageView) convertView
-              .findViewById(R.id.newspic);
+    //  viewHolder.imageView = (ImageView) convertView
+    //          .findViewById(R.id.newspic);
       viewHolder.titleView = (TextView) convertView
               .findViewById(R.id.newstitle);
       viewHolder.dateView = (TextView) convertView
@@ -84,12 +84,12 @@ public class RSSAdapter extends ArrayAdapter<RSSItem> {
     viewHolder.item = rssList.get(position);
 
     if(rssList.get(position).haveRead()) {
-      Log.v("setgrey", position+"");
+      //Log.v("setgrey", position+"");
       viewHolder.titleView.setTextColor(this.getContext().getResources().getColor(R.color.grey));
       viewHolder.dateView.setTextColor(this.getContext().getResources().getColor(R.color.grey));
     }
     else { //must set color again here, or listview won't update its changed color
-      Log.v("setblack", position+"");
+      //Log.v("setblack", position+"");
       viewHolder.titleView.setTextColor(this.getContext().getResources().getColor(R.color.totalBlack));
       viewHolder.dateView.setTextColor(this.getContext().getResources().getColor(R.color.totalBlack));
     }
@@ -119,67 +119,11 @@ public class RSSAdapter extends ArrayAdapter<RSSItem> {
     @Override
     protected void onPostExecute(ViewHolder result) {
       // TODO Auto-generated method stub
-      if (result.bitmap == null) {
-        result.imageView.setImageResource(R.drawable.noimages);
-      } else {
-        result.imageView.setImageBitmap(result.bitmap);
-      }
+//      if (result.bitmap == null) {
+//        result.imageView.setImageResource(R.drawable.noimages);
+//      } else {
+//        result.imageView.setImageBitmap(result.bitmap);
+//      }
     }
   }
 }
-//package wangchen.java.com.cnews;
-//
-//import android.app.Activity;
-//import android.content.Context;
-//import android.view.View;
-//import android.view.ViewGroup;
-//import android.view.LayoutInflater;
-//import android.widget.ArrayAdapter;
-//import android.widget.ImageView;
-//import android.widget.TextView;
-//
-//import java.util.ArrayList;
-//
-//public class RSSAdapter extends ArrayAdapter<RSSItem> {
-//  private final ArrayList<RSSItem> rssList;
-//
-//  public RSSAdapter(Context context, int resource, ArrayList<RSSItem> objects) {
-//    super(context, resource, objects);
-//    rssList = objects;
-//  }
-//
-//  private class ViewHolder {
-//    ImageView imageView;
-//    TextView urlView;
-//    TextView titleView;
-//    TextView dateView;
-//  }
-//
-//  @Override
-//  public View getView(int position, View convertView, ViewGroup parent) {
-//    ViewHolder viewHolder;
-//
-//    if (convertView == null) {
-//      LayoutInflater inflater = ((Activity)this.getContext()).getLayoutInflater();
-//      convertView = inflater.inflate(R.layout.newsitem, null);
-//
-//      viewHolder = new ViewHolder();
-//      viewHolder.imageView = (ImageView) convertView
-//              .findViewById(R.id.newspic);
-//      viewHolder.titleView = (TextView) convertView
-//              .findViewById(R.id.newstitle);
-//      viewHolder.dateView = (TextView) convertView
-//              .findViewById(R.id.newsdate);
-//      viewHolder.urlView = (TextView) convertView.findViewById(R.id.newslink);
-//      convertView.setTag(viewHolder);
-//    } else {
-//      viewHolder = (ViewHolder) convertView.getTag();
-//    }
-//
-//    viewHolder.imageView.setImageResource(R.drawable.ic_launcher_background);
-//    viewHolder.titleView.setText(rssList.get(position).getTitle());
-//    viewHolder.dateView.setText(rssList.get(position).getPubDate());
-//    viewHolder.urlView.setText(rssList.get(position).getLink());
-//    return convertView;
-//  }
-//}

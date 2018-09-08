@@ -61,7 +61,7 @@ public class RSSParser {
           } else if (eventType == XmlPullParser.TEXT) {
             String content = xpp.getText();
             content = content.trim();
-            Log.v("debug", content);
+            //Log.v("debug", content);
             if (pdData != null) {
               if(content.length() != 0) {
                 if(currentTag == RSSTAG.DATE) pdData.setDate(content);
