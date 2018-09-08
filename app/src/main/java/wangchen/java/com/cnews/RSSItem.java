@@ -47,6 +47,7 @@ public class RSSItem implements Serializable {
   public boolean haveRead() {
     return read;
   }
+
   public boolean judgeCollect() {
     return isCollected;
   }
@@ -72,12 +73,17 @@ public class RSSItem implements Serializable {
   public void setRead() {
     read = true;
   }
+
   public void setCollected() {
     isCollected = true;
   }
   public void unCollect() {
     isCollected = false;
   }
+  public void changeCollect() {
+    isCollected = !isCollected;
+  }
+
   public void unRead() {
     read = false;
   }
@@ -85,6 +91,7 @@ public class RSSItem implements Serializable {
     if(image.length() > 0) return true;
     return false;
   }
+
   @Override
   public String toString() { // return json format of the rss item
     return "{title:" + title + ", description:" + description + ", link:" + link + ", author:" + author + ", image:" + image + ", date:" + pubDate + "}";

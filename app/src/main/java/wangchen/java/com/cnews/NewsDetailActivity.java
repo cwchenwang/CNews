@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
@@ -24,6 +25,7 @@ public class NewsDetailActivity extends AppCompatActivity {
   private WebView webView;
   private String url;
   private RSSItem rssItem;
+  private int position = 0;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +56,8 @@ public class NewsDetailActivity extends AppCompatActivity {
     rssItem = (RSSItem)in.getSerializableExtra("RSSITEM");
     url = rssItem.getLink();
 
+    position = in.getIntExtra("POSITION", 0);
+
     if (TextUtils.isEmpty(url)) {
       Toast.makeText(getApplicationContext(), "URL ERROR", Toast.LENGTH_SHORT).show();
       finish();
@@ -67,12 +71,14 @@ public class NewsDetailActivity extends AppCompatActivity {
 
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
-
     getMenuInflater().inflate(R.menu.menu_newsdetail, menu);
-//    if(rssItem.judgeCollect()) {
-//      MenuItem item = findViewById(R.id.keep);
-//      item.setIcon(R.drawable.keeped);
-//    }
+    MenuItem item = menu.findItem(R.id.keep);
+    if(rssItem.judgeCollect()) {
+      item.setIcon(R.drawable.keeped);
+    }
+    else {
+      item.setIcon(R.drawable.keep);
+    }
     return true;
   }
 
@@ -80,6 +86,10 @@ public class NewsDetailActivity extends AppCompatActivity {
   public boolean onOptionsItemSelected(MenuItem item) {
     switch (item.getItemId()){
       case R.id.backup:
+        Intent intent = new Intent();
+        intent.putExtra("RSSITEM", rssItem);
+        intent.putExtra("POSITION", position);
+        setResult(1, intent);
         finish();
         break;
 
@@ -88,17 +98,22 @@ public class NewsDetailActivity extends AppCompatActivity {
         break;
 
       case R.id.keep:
-        if(rssItem.judgeCollect()) {
-          rssItem.unCollect();
-          item.setIcon(R.drawable.keep);
-        }
-        collect();
-        //TODO add collections
+        collect(item);
 
       default:
         break;
     }
     return true;
+  }
+
+  @Override
+  public void onBackPressed() {
+    Intent intent = new Intent();
+    intent.putExtra("RSSITEM", rssItem);
+    intent.putExtra("POSITION", position);
+    setResult(1, intent);
+
+    super.onBackPressed();
   }
 
   private void share() {
@@ -109,14 +124,17 @@ public class NewsDetailActivity extends AppCompatActivity {
     startActivity(Intent.createChooser(shareIntent, "选择分享的应用"));
   }
 
-  private void collect() {
+  private void collect(MenuItem item) {
     if(rssItem.judgeCollect()) {
-      rssItem.unCollect();
+      item.setIcon(R.drawable.keep);
+      Toast.makeText(this, "已取消收藏", Toast.LENGTH_SHORT).show();
       //TODO 数据库
     }
     else {
-      rssItem.setCollected();
+      item.setIcon(R.drawable.keeped);
+      Toast.makeText(this, "已添加收藏", Toast.LENGTH_SHORT).show();
     }
+    rssItem.changeCollect();
   }
 
   private void initWebView() {

@@ -37,6 +37,8 @@ public class NewsFragment extends Fragment {
   private String sourceUrl;
   private boolean loadingData = true;
 
+  private int REQUESTCODE = 1;
+
   public static NewsFragment newInstance(String sourceStr, String tag) {
     NewsFragment newsFragment = new NewsFragment();
     Bundle bundle = new Bundle();
@@ -84,7 +86,7 @@ public class NewsFragment extends Fragment {
         String pubDate = ((TextView)view.findViewById(R.id.newsdate)).getText().toString().trim();
 
         intent.putExtra("RSSITEM", rssList.get(position));
-
+        intent.putExtra("POSITION", position);
         TextView titleView = view.findViewById(R.id.newstitle);
         TextView dateView = view.findViewById(R.id.newsdate);
 
@@ -92,13 +94,12 @@ public class NewsFragment extends Fragment {
 //        titleView.setTextColor(getResources().getColor(R.color.grey));
 //        dateView.setTextColor(getResources().getColor(R.color.grey));
         adapter.notifyDataSetChanged();
-        startActivity(intent);
+        startActivityForResult(intent, REQUESTCODE);
       }
     });
 
     return view;
   }
-
 
   private class RssDataController extends AsyncTask<String, Integer, ArrayList<RSSItem>>{
     @Override
@@ -186,5 +187,23 @@ public class NewsFragment extends Fragment {
       e.printStackTrace();
     }
     return postDataList;
+  }
+
+  @Override
+  public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+    // RESULT_OK，判断另外一个activity已经结束数据输入功能，Standard activity result:
+    // operation succeeded. 默认值是-1
+    if (resultCode == 1) {
+      if (requestCode == REQUESTCODE) {
+        int position = data.getIntExtra("POSITION", 0);
+        //设置结果显示框的显示数值
+        RSSItem rssItem = (RSSItem)data.getSerializableExtra("RSSITEM");
+        Log.v("ha", rssItem.toString());
+        if(rssList.get(position).judgeCollect() != rssItem.judgeCollect()) {
+          rssList.get(position).changeCollect();
+        }
+      }
+    }
   }
 }
