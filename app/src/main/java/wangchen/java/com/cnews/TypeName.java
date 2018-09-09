@@ -37,6 +37,17 @@ public enum TypeName {
     return RECOMMAND;
   }
 
+  public static int getTypeInt(String name) {
+    if(name.equals("推荐")) return 0;
+    else if(name.equals("国内新闻")) return 1;
+    else if(name.equals("教育")) return 2;
+    else if(name.equals("体育")) return 3;
+    else if(name.equals("电影")) return 4;
+    else if(name.equals("互联网")) return 5;
+    else if(name.equals("财经")) return 6;
+    return 0;
+  }
+
   @Override
   public String toString() {
     return name + " " + url;

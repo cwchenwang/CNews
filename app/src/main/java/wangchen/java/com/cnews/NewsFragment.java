@@ -1,5 +1,6 @@
 package wangchen.java.com.cnews;
 
+import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -17,12 +18,15 @@ import android.content.Intent;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.Ref;
 import java.util.ArrayList;
 import android.content.Context;
 import android.widget.Toast;
+
+import wangchen.java.com.cnews.db.NewsDBHelper;
 
 public class NewsFragment extends Fragment {
   private ListView listView;
@@ -35,6 +39,7 @@ public class NewsFragment extends Fragment {
 
   private String tag = "tag";
   private String sourceUrl;
+  private int typeInt;
   private boolean loadingData = true;
 
   private int REQUESTCODE = 1;
@@ -56,6 +61,7 @@ public class NewsFragment extends Fragment {
 
     sourceUrl = getArguments().getString("SOURCEURL");
     tag = getArguments().getString("TAG");
+    typeInt = TypeName.getTypeInt(tag);
 
     rssDataController = new RssDataController();
     rssDataController.execute(sourceUrl);
@@ -93,7 +99,18 @@ public class NewsFragment extends Fragment {
         rssList.get(position).setRead();
 //        titleView.setTextColor(getResources().getColor(R.color.grey));
 //        dateView.setTextColor(getResources().getColor(R.color.grey));
+
+        final int tep_p = position;
         adapter.notifyDataSetChanged();
+        new Thread(new Runnable() {
+          @Override
+          public void run() {
+            Log.v("db", "starting db");
+            NewsDBHelper db = ((CNewsApp)getActivity().getApplicationContext()).getDB();
+            db.updateItem(rssList.get(tep_p), typeInt);
+          }
+        }) {
+        }.start();
         startActivityForResult(intent, REQUESTCODE);
       }
     });
@@ -109,21 +126,57 @@ public class NewsFragment extends Fragment {
 
     @Override
     protected void onPostExecute(ArrayList<RSSItem> result) {
-      if (rssList == null) {
-        rssList = new ArrayList<>();
-        if(getActivity() != null) {
-          adapter = new RSSAdapter(getActivity(), R.layout.item, rssList);
-          listView.setAdapter(adapter);
-        }
-        else return;
-      }
-      int t = rssList.size();
+//      if (rssList == null) {
+//        rssList = new ArrayList<>();
+//        if(getActivity() != null) {
+//          adapter = new RSSAdapter(getActivity(), R.layout.item, rssList);
+//          listView.setAdapter(adapter);
+//        }
+//        else return;
+//      }
+//
+//      NewsDBHelper db = ((CNewsApp)getActivity().getApplicationContext()).getDB();
+//      int t = rssList.size();
+//      int typeInt = TypeName.getTypeInt(tag);
+//      Log.v("type=", typeInt+"");
+//      for (int i = 0; i < result.size(); i++) {
+//        //Log.v("result", result.get(i).toString());
+//        db.saveItem(result.get(i), typeInt);
+//        if(i >= 10) break;
+//        if (i < t) rssList.set(i, result.get(i));
+//        else rssList.add(result.get(i));
+//        //Log.v("Data loaded", result.get(i).toString());
+//      }
+
+      rssList = new ArrayList<>();
+      if(getActivity() != null) {
+        adapter = new RSSAdapter(getActivity(), R.layout.item, rssList);
+        listView.setAdapter(adapter);
+      } else return;
+
+      NewsDBHelper db = ((CNewsApp)getActivity().getApplicationContext()).getDB();
+      ArrayList<RSSItem> tep = db.retriveList(typeInt);
+      Log.v("tepsize", tep.size()+"");
+      Log.v("type", tag);
+      for(int i = 0; i < tep.size(); i++) {
+        Log.v("type", tep.get(i).toString());
+        if(tep.get(i).haveRead())
+          rssList.add(0, tep.get(i));
+        else rssList.add(tep.get(i));
+      } //加载数据库中保存的列表
+
       for (int i = 0; i < result.size(); i++) {
+        //Log.v("result", result.get(i).toString());
+        //db.saveItem(result.get(i), typeInt);
         if(i >= 10) break;
-        if (i < t) rssList.set(i, result.get(i));
-        else rssList.add(result.get(i));
+        if(rssList.contains(result.get(i))) continue;
+        else {
+          rssList.add(0, result.get(i));
+          db.saveItem(result.get(i), typeInt);
+        }
         //Log.v("Data loaded", result.get(i).toString());
       }
+
       adapter.notifyDataSetChanged();
       loadingData = false;
     }
@@ -138,13 +191,22 @@ public class NewsFragment extends Fragment {
     @Override
     protected void onPostExecute(ArrayList<RSSItem> result) {
       int cnt = 0;
+
+      NewsDBHelper db = ((CNewsApp)getActivity().getApplicationContext()).getDB();
+      for(int i = 0; i < rssList.size(); i++) {
+        Log.v("rssList", rssList.get(i).getTitle());
+      }
+
       for(RSSItem item : result) {
-        Log.v("result", item.toString());
+       // Log.v("result", item.toString());
         if(rssList.contains(item)) {
+          //Log.d("contains", item.toString());
           continue;
         }
         else {
           rssList.add(0, item);
+          //Log.v("not contain", item.toString());
+          db.saveItem(item, typeInt);
           cnt++;
         }
       }
@@ -205,6 +267,8 @@ public class NewsFragment extends Fragment {
         Log.v("ha", rssItem.toString());
         if(rssList.get(position).judgeCollect() != rssItem.judgeCollect()) {
           rssList.get(position).changeCollect();
+          NewsDBHelper db = ((CNewsApp)getActivity().getApplicationContext()).getDB();
+          db.updateItem(rssList.get(position), typeInt);
         }
       }
     }

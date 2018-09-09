@@ -140,11 +140,14 @@ public class RSSItem implements Serializable {
 
   @Override
   public boolean equals(Object v) {
-    boolean res = false;
     if(v instanceof RSSItem) {
-      RSSItem ptr = (RSSItem)v;
-      res = this.toString().equals(ptr.toString());
+      if(((RSSItem) v).getTitle().equals(this.getTitle())) {
+        return true;
+      }
+      else {
+        return false;
+      }
     }
-    return res;
+    return false;
   }
 }

@@ -8,6 +8,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import wangchen.java.com.cnews.RSSItem;
+import wangchen.java.com.cnews.TypeName;
+
 import java.util.ArrayList;
 
 public class NewsDBHelper extends SQLiteOpenHelper {
@@ -15,8 +17,13 @@ public class NewsDBHelper extends SQLiteOpenHelper {
   public static final int DB_VERSION = 1;
   public static final String DB_NAME = "NewsDB.db";
   public static final String TABLE_NAME = "news";
-  private static final String CREATE_TABLE = "create table if not exists news " +
+  private static final String CREATE_COLLECT = "create table if not exists news " +
           "(type integer, title text UNIQUE, link text, date text, read integer, collect integer)";
+  private static final String CREATE_HISTORY = "create table if not exists history " +
+          "(type integer, title text UNIQUE, link text, date text, read integer, collect integer)";
+
+  private static final String DROP_COLLECT = "DROP TABLE IF EXISTS news";
+  private static final String DROP_HISTORY = "DROP TABLE IF EXISTS history";
 
   public NewsDBHelper(Context context) {
     super(context, DB_NAME, null, DB_VERSION);
@@ -24,13 +31,55 @@ public class NewsDBHelper extends SQLiteOpenHelper {
 
   @Override
   public void onCreate(SQLiteDatabase db) {
-    db.execSQL(CREATE_TABLE);
+    db.execSQL(CREATE_COLLECT);
+    db.execSQL(CREATE_HISTORY);
   }
 
 
   @Override
   public void onUpgrade(SQLiteDatabase db, int a, int b) { //Upgrade version
 
+  }
+
+  private ContentValues getValues(RSSItem rssItem, int t) {
+    ContentValues values = new ContentValues();
+    values.put("type", t);
+    values.put("title", rssItem.getTitle());
+    values.put("link", rssItem.getLink());
+    values.put("date", rssItem.getPubDate());
+    if(rssItem.haveRead()) {
+      values.put("read", 1);
+    }
+    else values.put("read", 0);
+    if(rssItem.judgeCollect()) {
+      values.put("collect", 1);
+    }
+    else values.put("collect", 0);
+    return values;
+  }
+
+  public void saveItem(RSSItem rssItem, int t) {
+    SQLiteDatabase db = getWritableDatabase();
+    ContentValues values = new ContentValues();
+    values.put("type", t);
+    values.put("title", rssItem.getTitle());
+    values.put("link", rssItem.getLink());
+    values.put("date", rssItem.getPubDate());
+    if(rssItem.haveRead()) {
+      values.put("read", 1);
+    }
+    else values.put("read", 0);
+    if(rssItem.judgeCollect()) {
+      values.put("collect", 1);
+    }
+    else values.put("collect", 0);
+    db.insertWithOnConflict("history", null, values, SQLiteDatabase.CONFLICT_REPLACE);
+  }
+
+  public void updateItem(RSSItem rssItem, int t) {
+    ContentValues values = getValues(rssItem, t);
+    SQLiteDatabase db = getWritableDatabase();
+    db.insertWithOnConflict("history", null, values, SQLiteDatabase.CONFLICT_REPLACE);
   }
 
   public void collectItem(RSSItem rssItem) {
@@ -72,11 +121,32 @@ public class NewsDBHelper extends SQLiteOpenHelper {
     return rssList;
   }
 
+  public ArrayList<RSSItem> retriveList(int t) { //Retrieve the whole list of one type
+    SQLiteDatabase db = getWritableDatabase();
+    ArrayList<RSSItem> rssList = new ArrayList<>();
+    String command = "SELECT * FROM history WHERE type=" + t;
+
+    Cursor cursor = db.rawQuery(command, null);
+    while(cursor.moveToNext()) {
+      String title = cursor.getString(1);
+      String link = cursor.getString(2);
+      String date = cursor.getString(3);
+      int read = cursor.getInt(4);
+      int collect = cursor.getInt(5);
+      RSSItem rssItem = new RSSItem(title, link, date);
+      if(read == 1) rssItem.setRead();
+      if(collect == 1) rssItem.setCollected();
+      rssList.add(rssItem);
+    }
+    return rssList;
+  }
+
   public void removeItem(RSSItem rssItem) {
     SQLiteDatabase db = getWritableDatabase();
     String[] args = { rssItem.getTitle() };
     db.delete("news", "title" + " = ?", args);
   }
+
 }
 
 //package wangchen.java.com.cnews.db;

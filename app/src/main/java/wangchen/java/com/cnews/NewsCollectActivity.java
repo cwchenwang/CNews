@@ -1,6 +1,5 @@
 package wangchen.java.com.cnews;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -9,6 +8,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -31,6 +31,9 @@ public class NewsCollectActivity extends AppCompatActivity {
     listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
       @Override
       public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        if(collectionList.get(position).getLink().length() == 0) {
+          Toast.makeText(getApplicationContext(), "您没有收藏哦", Toast.LENGTH_SHORT).show();
+        }
         Intent intent = new Intent(getApplicationContext(), NewsDetailActivity.class);
 
         intent.putExtra("RSSITEM", collectionList.get(position));
@@ -73,23 +76,6 @@ public class NewsCollectActivity extends AppCompatActivity {
         listView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
       }
-//      if (rssList == null) {
-//        rssList = new ArrayList<>();
-//        if(getActivity() != null) {
-//          adapter = new RSSAdapter(getActivity(), R.layout.newsitem, rssList);
-//          listView.setAdapter(adapter);
-//        }
-//        else return;
-//      }
-//      int t = rssList.size();
-//      for (int i = 0; i < result.size(); i++) {
-//        if(i >= 10) break;
-//        if (i < t) rssList.set(i, result.get(i));
-//        else rssList.add(result.get(i));
-//        //Log.v("Data loaded", result.get(i).toString());
-//      }
-//      adapter.notifyDataSetChanged();
-//      loadingData = false;
     }
   }
 }

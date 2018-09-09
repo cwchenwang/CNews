@@ -6,7 +6,7 @@ CNews means see news, it is an android app developed by Clarence.
 - [x] Content View
 - [x] Already Read Grey
 - [x] Category delete and add
-- [ ] Local Storage
+- [x] Local Storage
 - [ ] Search news
 - [x] Share with INTENT_SEND (only text)
 - [x] Collections
