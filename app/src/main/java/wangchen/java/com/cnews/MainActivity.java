@@ -1,5 +1,9 @@
 package wangchen.java.com.cnews;
 
+import android.app.Activity;
+import android.app.SearchManager;
+import android.app.SearchableInfo;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -163,13 +167,24 @@ public class MainActivity extends AppCompatActivity {
   public boolean onCreateOptionsMenu(Menu menu) {
     getMenuInflater().inflate(R.menu.menu_home, menu);
 
-    SearchView sv = (SearchView) menu.findItem(R.id.toolbar_search).getActionView();
+    //SearchView searchView = (SearchView) menu.findItem(R.id.toolbar_search).getActionView();
 
+    SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+    SearchView searchView = (SearchView) menu.findItem(R.id.toolbar_search).getActionView();
+    SearchableInfo info = searchManager.getSearchableInfo(getComponentName());
+    searchView.setSearchableInfo(info);
+
+    searchView.setQueryHint("查找内容...");
+    searchView.setSubmitButtonEnabled(true);
     //设置监听
-    sv.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+    searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
       @Override
       public boolean onQueryTextSubmit(String query) {
-        return false;
+        Toast.makeText(getApplicationContext(), "搜索成功", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(getApplicationContext(), NewsSearchActivity.class);
+        intent.putExtra("SEARCH", query);
+        startActivity(intent);
+        return true;
       }
 
       @Override

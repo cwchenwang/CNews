@@ -120,6 +120,29 @@ public class NewsDBHelper extends SQLiteOpenHelper {
     return rssList;
   }
 
+  public ArrayList<RSSItem> searchStr(String str) {
+    SQLiteDatabase db = getWritableDatabase();
+    ArrayList<RSSItem> rssList = new ArrayList<>();
+    String command = "SELECT * FROM history";
+    Cursor cursor = db.rawQuery(command, null);
+    while(cursor.moveToNext()) {
+      String title = cursor.getString(1);
+      if(title.contains(str)) {
+        String link = cursor.getString(2);
+        String author = cursor.getString(3);
+        String date = cursor.getString(4);
+        int read = cursor.getInt(5);
+        int collect = cursor.getInt(6);
+        RSSItem rssItem = new RSSItem(title, link, author, date);
+        if(read == 1) rssItem.setRead();
+        if(collect == 1) rssItem.setCollected();
+        rssList.add(rssItem);
+      }
+      else continue;
+    }
+    return rssList;
+  }
+
   public void removeItem(RSSItem rssItem) {
     SQLiteDatabase db = getWritableDatabase();
     String[] args = { rssItem.getTitle() };

@@ -31,6 +31,10 @@
             android:parentActivityName=".MainActivity"
             android:theme="@style/NoActionBar">
         </activity>
+        <activity android:name=".NewsSearchActivity"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/NoActionBar">
+        </activity>
     </application>
 
 </manifest>

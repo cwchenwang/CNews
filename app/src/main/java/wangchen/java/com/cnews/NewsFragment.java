@@ -97,8 +97,6 @@ public class NewsFragment extends Fragment {
         TextView dateView = view.findViewById(R.id.newsdate);
 
         rssList.get(position).setRead();
-//        titleView.setTextColor(getResources().getColor(R.color.grey));
-//        dateView.setTextColor(getResources().getColor(R.color.grey));
 
         final int tep_p = position;
         adapter.notifyDataSetChanged();
