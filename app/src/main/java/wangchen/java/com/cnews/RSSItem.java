@@ -23,10 +23,11 @@ public class RSSItem implements Serializable {
   public RSSItem() {
 
   }
-  public RSSItem(String title, String link, String pubDate) {
+  public RSSItem(String title, String link, String author, String pubDate) {
     this.title = title;
     this.link = link;
     this.pubDate = pubDate;
+    this.author = author;
   }
 
   public String getImage() {

@@ -126,31 +126,10 @@ public class NewsFragment extends Fragment {
 
     @Override
     protected void onPostExecute(ArrayList<RSSItem> result) {
-//      if (rssList == null) {
-//        rssList = new ArrayList<>();
-//        if(getActivity() != null) {
-//          adapter = new RSSAdapter(getActivity(), R.layout.item, rssList);
-//          listView.setAdapter(adapter);
-//        }
-//        else return;
-//      }
-//
-//      NewsDBHelper db = ((CNewsApp)getActivity().getApplicationContext()).getDB();
-//      int t = rssList.size();
-//      int typeInt = TypeName.getTypeInt(tag);
-//      Log.v("type=", typeInt+"");
-//      for (int i = 0; i < result.size(); i++) {
-//        //Log.v("result", result.get(i).toString());
-//        db.saveItem(result.get(i), typeInt);
-//        if(i >= 10) break;
-//        if (i < t) rssList.set(i, result.get(i));
-//        else rssList.add(result.get(i));
-//        //Log.v("Data loaded", result.get(i).toString());
-//      }
 
       rssList = new ArrayList<>();
       if(getActivity() != null) {
-        adapter = new RSSAdapter(getActivity(), R.layout.item, rssList);
+        adapter = new RSSAdapter(getActivity(), R.layout.newsitem, rssList);
         listView.setAdapter(adapter);
       } else return;
 

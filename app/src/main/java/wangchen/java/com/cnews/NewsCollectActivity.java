@@ -60,7 +60,7 @@ public class NewsCollectActivity extends AppCompatActivity {
     @Override
     protected void onPostExecute(ArrayList<RSSItem> result) {
       if(result.size() == 0) {
-        RSSItem rssItem = new RSSItem("你没有收藏，快去添加吧", "", "1970-01-01 00:00:00");
+        RSSItem rssItem = new RSSItem("你没有收藏，快去添加吧", "", "", "1970-01-01 00:00:00");
         collectionList = new ArrayList<>();
         collectionList.add(rssItem);
         adapter = new RSSAdapter(NewsCollectActivity.this, R.layout.newsitem, collectionList);
