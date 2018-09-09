@@ -23,6 +23,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.Ref;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 
 import android.content.Context;
@@ -37,13 +38,12 @@ public class RecommandFragment extends Fragment {
   private ArrayList<RSSItem> rssList = null;
   private RSSAdapter adapter;
   private RssDataController rssDataController;
-//  private RefreshController refreshController;
+  private RefreshController refreshController;
 
   private String tag = "tag";
-  private String sourceUrl = "http://rss.sina.com.cn/news/china/focus15.xml";
-  private boolean loadingData = true;
-
-  private int REQUESTCODE = 1;
+  private String sourceUrl = "http://rss.sina.com.cn/news/china/focus15.xml"; //热点url
+  private boolean isRefreshing = false;
+  private long lastRecommandTime = 0;
 
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -54,21 +54,40 @@ public class RecommandFragment extends Fragment {
     rssDataController = new RssDataController();
     rssDataController.execute(sourceUrl);
 
-//    refreshController = new RefreshController();
+    refreshController = new RefreshController();
     swipeView.setOnRefreshListener(
             new SwipeRefreshLayout.OnRefreshListener() {
               @Override
               public void onRefresh() {
                 if(rssDataController.getStatus() == AsyncTask.Status.PENDING){
                   rssDataController.execute(sourceUrl);
-                  Toast.makeText(getActivity().getApplicationContext(), "为您推荐，请稍候", Toast.LENGTH_SHORT).show();
+                  Toast.makeText(getActivity().getApplicationContext(), "正在为您推荐，请稍候", Toast.LENGTH_SHORT).show();
                   swipeView.setRefreshing(false);
                   return;
                 }
-                else {
-                  //Toast.makeText(getActivity().getApplicationContext(), "正在加载呢，请等待", Toast.LENGTH_SHORT).show();
+                if(isRefreshing) return;
+
+                long curTime = Calendar.getInstance().getTimeInMillis() / 1000;
+                long tep = (long)(Math.random() * 30 + 30);
+                if(curTime - lastRecommandTime < tep) {
                   swipeView.setRefreshing(false);
+                  Toast.makeText(getActivity().getApplicationContext(), "太频繁啦，没有那么可推荐哦", Toast.LENGTH_SHORT).show();
+                  return;
                 }
+                refreshController = new RefreshController();
+                refreshController.execute(sourceUrl);
+                swipeView.setRefreshing(false);
+//                else if(refreshController.getStatus() == AsyncTask.Status.PENDING) {
+//                  Toast.makeText(getActivity().getApplicationContext(), "为您更新推荐，请稍候", Toast.LENGTH_SHORT).show();
+//                  swipeView.setRefreshing(false);
+//                  return;
+//                }
+//                else {
+//                  Log.v("ha", "launching");
+//                  refreshController.execute(sourceUrl);
+//                  //Toast.makeText(getActivity().getApplicationContext(), "正在加载呢，请等待", Toast.LENGTH_SHORT).show();
+//                  swipeView.setRefreshing(false);
+//                }
               }
             }
     );
@@ -132,7 +151,9 @@ public class RecommandFragment extends Fragment {
           rssList.add(0, tep.get(i));
         else rssList.add(tep.get(i));
       } //加载数据库中保存的列表
+
       adapter.notifyDataSetChanged();
+      if(tep.size() > 0) return;
 
       int cnt = 0;
       int random = (int)Math.random() * result.size();
@@ -161,7 +182,68 @@ public class RecommandFragment extends Fragment {
       adapter.notifyDataSetChanged();
       if(cnt > 0) Toast.makeText(getActivity(), "更新了"+cnt+"条推荐", Toast.LENGTH_SHORT).show();
       else Toast.makeText(getActivity(), "暂无新的推荐", Toast.LENGTH_SHORT).show();
-      loadingData = false;
+    }
+  }
+
+  private class RefreshController extends AsyncTask<String, Integer, ArrayList<RSSItem>>{
+    @Override
+    protected ArrayList<RSSItem> doInBackground(String... params) {
+      Log.v("ha", "do in backgroud");
+      return fetchData(params[0]);
+    }
+
+    @Override
+    protected void onPostExecute(ArrayList<RSSItem> result) {
+
+      Log.v("ha", "onPostExecute");
+      rssList = new ArrayList<>();
+      if(getActivity() != null) {
+        adapter = new RSSAdapter(getActivity(), R.layout.newsitem, rssList);
+        listView.setAdapter(adapter);
+      } else return;
+
+      Log.v("db", "reading database");
+      NewsDBHelper db = ((CNewsApp)getActivity().getApplicationContext()).getDB();
+      ArrayList<RSSItem> tep = db.retriveRecommand();
+//      Log.v("tepsize", tep.size()+"");
+//      Log.v("type", tag);
+      for(int i = 0; i < tep.size(); i++) {
+        //  Log.v("type", tep.get(i).toString());
+        if(tep.get(i).haveRead())
+          rssList.add(0, tep.get(i));
+        else rssList.add(tep.get(i));
+      } //加载数据库中保存的列表
+
+      int cnt = 0;
+      int random = (int)Math.random() * result.size();
+      if(result.size() > 0 && !rssList.contains(result.get(random))) {
+        rssList.add(0, result.get(random));
+        db.insertRecommand(result.get(random));
+        cnt++;
+      }
+
+      if(rssList.size() > 30) {
+        for(int i = 0; i < 3; i++) {
+          rssList.remove(Math.random() * rssList.size());
+        }
+      }
+
+      HashMap<TypeName, Integer> map = ((CNewsApp)getActivity().getApplicationContext()).getReadTimes();
+      for(int i = 0; i < 3; i++) {
+        int t = Roulette.nextType(map);
+        RSSItem rssItem = db.retrieveOneRandomly(t);
+        if(rssItem != null && !rssList.contains(rssItem)) {
+          cnt++;
+          rssList.add(0, rssItem);
+          db.insertRecommand(rssItem);
+        }
+      }
+      adapter.notifyDataSetChanged();
+      Log.v("recommand", "finished");
+      if(cnt > 0) Toast.makeText(getActivity(), "更新了"+cnt+"条推荐", Toast.LENGTH_SHORT).show();
+      else Toast.makeText(getActivity(), "暂无新的推荐", Toast.LENGTH_SHORT).show();
+      isRefreshing = false;
+      lastRecommandTime = (long)(Calendar.getInstance().getTimeInMillis() / 1000);
     }
   }
 

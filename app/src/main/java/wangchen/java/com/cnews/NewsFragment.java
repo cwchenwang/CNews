@@ -149,6 +149,7 @@ public class NewsFragment extends Fragment {
           rssList.add(0, tep.get(i));
         else rssList.add(tep.get(i));
       } //加载数据库中保存的列表
+      adapter.notifyDataSetChanged();
 
       for (int i = 0; i < result.size(); i++) {
         //Log.v("result", result.get(i).toString());
@@ -193,6 +194,10 @@ public class NewsFragment extends Fragment {
           //Log.v("not contain", item.toString());
           db.saveItem(item, typeInt);
           cnt++;
+          if(cnt > 10) {
+            Toast.makeText(getActivity().getApplicationContext(), "更新了" + cnt + "条新闻", Toast.LENGTH_SHORT).show();
+            break;
+          }
         }
       }
 
