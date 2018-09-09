@@ -23,6 +23,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.Ref;
 import java.util.ArrayList;
+import java.util.HashMap;
+
 import android.content.Context;
 import android.widget.Toast;
 
@@ -110,6 +112,12 @@ public class NewsFragment extends Fragment {
         }) {
         }.start();
         startActivityForResult(intent, REQUESTCODE);
+
+        ((CNewsApp)getActivity().getApplicationContext()).updateReadTimes(TypeName.getType(tag));
+        HashMap<TypeName, Integer> map = ((CNewsApp)getActivity().getApplicationContext()).getReadTimes();
+        for(TypeName key: map.keySet()) {
+          Log.v(key.getName(), map.get(key).toString());
+        }
       }
     });
 
@@ -133,10 +141,10 @@ public class NewsFragment extends Fragment {
 
       NewsDBHelper db = ((CNewsApp)getActivity().getApplicationContext()).getDB();
       ArrayList<RSSItem> tep = db.retriveList(typeInt);
-      Log.v("tepsize", tep.size()+"");
-      Log.v("type", tag);
+      //Log.v("tepsize", tep.size()+"");
+      //Log.v("type", tag);
       for(int i = 0; i < tep.size(); i++) {
-        Log.v("type", tep.get(i).toString());
+        //Log.v("type", tep.get(i).toString());
         if(tep.get(i).haveRead())
           rssList.add(0, tep.get(i));
         else rssList.add(tep.get(i));

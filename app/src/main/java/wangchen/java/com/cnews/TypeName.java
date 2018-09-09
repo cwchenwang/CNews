@@ -4,11 +4,11 @@ public enum TypeName {
 
   RECOMMAND("推荐", "http://news.qq.com"),
   China("国内新闻", "http://news.qq.com/newsgn/rss_newsgn.xml"),
-  EDU("教育", "http://edu.qq.com/gaokao/rss_gaokao.xml"),
-  SPORTS("体育", "http://sports.qq.com/rss_newssports.xml"),
+  EDU("教育", "http://rss.sina.com.cn/edu/focus19.xml"),
+  SPORTS("体育", "http://www.people.com.cn/rss/sports.xml"),
   MOVIE("电影", "http://ent.qq.com/movie/rss_movie.xml"),
   WEB("互联网", "http://tech.qq.com/web/rss_web.xml"),
-  FINANCE("财经", "http://finance.qq.com/scroll/rss_scroll.xml");
+  FINANCE("财经", "http://www.people.com.cn/rss/finance.xml");
 
   private String name;
   private String url;

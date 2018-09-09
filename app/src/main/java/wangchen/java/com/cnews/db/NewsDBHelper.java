@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import wangchen.java.com.cnews.RSSItem;
@@ -21,6 +22,8 @@ public class NewsDBHelper extends SQLiteOpenHelper {
           "(type integer, title text UNIQUE, link text, author text, date text, read integer, collect integer)";
   private static final String CREATE_HISTORY = "create table if not exists history " +
           "(type integer, title text UNIQUE, link text, author text, date text, read integer, collect integer)";
+  private static final String CREATE_RECOMMAND = "create table if not exists recommand " +
+          "(title text UNIQUE, link text, author text, date text, read integer, collect integer)";
 
   private static final String DROP_COLLECT = "DROP TABLE IF EXISTS news";
   private static final String DROP_HISTORY = "DROP TABLE IF EXISTS history";
@@ -33,6 +36,7 @@ public class NewsDBHelper extends SQLiteOpenHelper {
   public void onCreate(SQLiteDatabase db) {
     db.execSQL(CREATE_COLLECT);
     db.execSQL(CREATE_HISTORY);
+    db.execSQL(CREATE_RECOMMAND);
   }
 
 
@@ -43,7 +47,7 @@ public class NewsDBHelper extends SQLiteOpenHelper {
 
   private ContentValues getValues(RSSItem rssItem, int t) {
     ContentValues values = new ContentValues();
-    values.put("type", t);
+    if(t > 0) values.put("type", t);
     values.put("title", rssItem.getTitle());
     values.put("link", rssItem.getLink());
     values.put("date", rssItem.getPubDate());
@@ -76,6 +80,12 @@ public class NewsDBHelper extends SQLiteOpenHelper {
 
     ContentValues values = getValues(rssItem, 10);
     db.insertWithOnConflict("news", null, values, SQLiteDatabase.CONFLICT_REPLACE);
+  }
+
+  public void insertRecommand(RSSItem rssItem) {
+    ContentValues values = getValues(rssItem, 0);
+    SQLiteDatabase db = getWritableDatabase();
+    db.insertWithOnConflict("recommand", null, values, SQLiteDatabase.CONFLICT_REPLACE);
   }
 
   public ArrayList<RSSItem> retriveCollections() {
@@ -120,6 +130,53 @@ public class NewsDBHelper extends SQLiteOpenHelper {
     return rssList;
   }
 
+  public ArrayList<RSSItem> retriveRecommand() { //Retrieve the whole list of one type
+    SQLiteDatabase db = getWritableDatabase();
+    ArrayList<RSSItem> rssList = new ArrayList<>();
+    String command = "SELECT * FROM recommand";
+
+    Cursor cursor = db.rawQuery(command, null);
+    while(cursor.moveToNext()) {
+      String title = cursor.getString(0);
+      String link = cursor.getString(1);
+      String author = cursor.getString(2);
+      String date = cursor.getString(3);
+      int read = cursor.getInt(4);
+      int collect = cursor.getInt(5);
+      RSSItem rssItem = new RSSItem(title, link, author, date);
+      if(read == 1) rssItem.setRead();
+      if(collect == 1) rssItem.setCollected();
+      rssList.add(rssItem);
+    }
+    return rssList;
+  }
+
+  public RSSItem retrieveOneRandomly(int t) { //retrieve news randomly from one type
+    SQLiteDatabase db = getWritableDatabase();
+    ArrayList<RSSItem> rssList = new ArrayList<>();
+    String command = "SELECT * FROM history WHERE type=" + t;
+
+    Cursor cursor = db.rawQuery(command, null);
+    while(cursor.moveToNext()) {
+      String title = cursor.getString(1);
+      String link = cursor.getString(2);
+      String author = cursor.getString(3);
+      String date = cursor.getString(4);
+      int read = cursor.getInt(5);
+      int collect = cursor.getInt(6);
+      RSSItem rssItem = new RSSItem(title, link, author, date);
+      if(read == 1) continue;
+      if(collect == 1) rssItem.setCollected();
+      rssList.add(rssItem);
+    }
+    int n = rssList.size();
+    if(n == 0) return null;
+    else {
+      int num = (int)(Math.random()*n);
+      return rssList.get(num);
+    }
+  }
+
   public ArrayList<RSSItem> searchStr(String str) {
     SQLiteDatabase db = getWritableDatabase();
     ArrayList<RSSItem> rssList = new ArrayList<>();
@@ -148,4 +205,5 @@ public class NewsDBHelper extends SQLiteOpenHelper {
     String[] args = { rssItem.getTitle() };
     db.delete("news", "title" + " = ?", args);
   }
+
 }

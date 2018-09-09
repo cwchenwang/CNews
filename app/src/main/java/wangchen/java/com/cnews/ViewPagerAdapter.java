@@ -19,9 +19,8 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
   public Fragment getItem(int position) {
     Fragment fragment = null;
     if (position == 0) {
-      fragment = new Fragment();
+      fragment = new RecommandFragment();
     }
-
     else {
       TypeName typeName = typeList.get(position);
       fragment = NewsFragment.newInstance(typeName.getURL(), typeName.getName());
