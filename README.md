@@ -8,7 +8,14 @@ This app is a news app. Or you can simply call it rss reader. The news mainly co
 
 As you can imagine, the time for the project is really short, just about a week. A week ago, I don't have any experience in Android programming (I don't have any now, either). Therefore, it is not hard to notice that the code is poorly written and awfully constructed, with a lot lines of annotations not deleted. And I have no plan to reconstruct it at all.
 
-However, this app may be useful for you in some ways. The way to parse rss, the login UI, the layout... You can clone or fork it freely.
+However, this app may be useful for you in some ways. The way to parse rss, the login UI, the layout... You can clone or fork it freely. Or you can just download the apk to use it, assuming that you have patience with it.
+
+## Screenshots
+![](screenshots/login.jpeg)
+![](screenshots/type.jpeg)
+![](screenshots/list.jpeg)
+![](screenshots/me.jpeg)
+![](screenshots/share.jpeg)
 
 ## To Do
 - [x] Pull down to refresh
