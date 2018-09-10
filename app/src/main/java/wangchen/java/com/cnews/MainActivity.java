@@ -31,9 +31,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.SpinnerAdapter;
 import android.support.v4.widget.DrawerLayout;
 import android.support.design.widget.NavigationView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+
+import wangchen.java.com.cnews.db.NewsDBHelper;
 
 import static android.support.v4.view.PagerAdapter.POSITION_NONE;
 
@@ -44,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     }
   }};
 
+  private final int REQUEST_LOGIN = 2;
   final String dialogItemList[] = new String[TypeName.values().length];
 
   private boolean dialogRes[] = new boolean[TypeName.values().length];
@@ -52,10 +56,11 @@ public class MainActivity extends AppCompatActivity {
   private ViewPager viewPager;
   private ViewPagerAdapter viewPagerAdapter;
   private ImageButton imageButton;
+  private ImageButton loginButton;
   private Toolbar toolbar;
   private DrawerLayout mDrawerLayout;
   private AlertDialog.Builder builder;
-
+  private NavigationView navigationView;
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -75,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
 
     mDrawerLayout = findViewById(R.id.drawer_layout);
 
-    NavigationView navigationView = findViewById(R.id.nav_view);
+    navigationView = findViewById(R.id.nav_view);
     navigationView.setNavigationItemSelectedListener(
             new NavigationView.OnNavigationItemSelectedListener() {
               @Override
@@ -161,6 +166,15 @@ public class MainActivity extends AppCompatActivity {
       }
     });
 
+    loginButton = navigationView.getHeaderView(0).findViewById(R.id.login_button);
+    loginButton.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        Toast.makeText(getApplicationContext(), "登陆", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+        startActivityForResult(intent, REQUEST_LOGIN);
+      }
+    });
   }
 
   @Override
@@ -201,7 +215,33 @@ public class MainActivity extends AppCompatActivity {
       case android.R.id.home:
         mDrawerLayout.openDrawer(GravityCompat.START);
         return true;
+      case R.id.about:
+        AlertDialog myDialog;
+        AlertDialog.Builder b = new AlertDialog.Builder(this);
+        b.setTitle("About");
+        b.setMessage("CNews is a news app developed by Clarence Wang.");
+        b.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+          @Override
+          public void onClick(DialogInterface dialog, int which) {
+            dialog.dismiss();
+          }
+        });
+        myDialog = b.create();
+        myDialog.show();
     }
     return super.onOptionsItemSelected(item);
+  }
+
+  @Override
+  public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+    if(requestCode == REQUEST_LOGIN) {
+      if(resultCode == LoginActivity.LOGIN_SUCCESS) {
+        String username = data.getStringExtra("USERNAME");
+        TextView textView = navigationView.getHeaderView(0).findViewById(R.id.username_display);
+        textView.setText(username);
+        Log.v("username", username);
+      }
+    }
   }
 }
