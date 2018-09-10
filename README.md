@@ -11,5 +11,5 @@ CNews means see news, it is an android app developed by Clarence.
 - [x] Share with INTENT_SEND (only text)
 - [x] Collections
 - [x] Recommandation
-- [ ] Login
+- [x] Login (just local db)
 - [ ] Word2Link

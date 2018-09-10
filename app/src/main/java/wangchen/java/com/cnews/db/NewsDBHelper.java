@@ -25,6 +25,9 @@ public class NewsDBHelper extends SQLiteOpenHelper {
   private static final String CREATE_RECOMMAND = "create table if not exists recommand " +
           "(title text UNIQUE, link text, author text, date text, read integer, collect integer)";
 
+  private static final String CREATE_LOGIN = "create table if not exists login " +
+          "(username text UNIQUE, password text)";
+
   private static final String DROP_COLLECT = "DROP TABLE IF EXISTS news";
   private static final String DROP_HISTORY = "DROP TABLE IF EXISTS history";
 
@@ -37,12 +40,60 @@ public class NewsDBHelper extends SQLiteOpenHelper {
     db.execSQL(CREATE_COLLECT);
     db.execSQL(CREATE_HISTORY);
     db.execSQL(CREATE_RECOMMAND);
+    db.execSQL(CREATE_LOGIN);
+
+    ContentValues values = new ContentValues();
+    values.put("username", "wangchen");
+    values.put("password", "123456");
+    db.insertWithOnConflict("login", null, values, SQLiteDatabase.CONFLICT_REPLACE);
   }
 
 
   @Override
   public void onUpgrade(SQLiteDatabase db, int a, int b) { //Upgrade version
 
+  }
+
+  public static int LOGIN_SUCCESS = 0;
+  public static int USER_NOT_FOUND = 1;
+  public static int PASSWORD_ERROR = 2;
+  public int checkPassword(String username, String password) {
+    SQLiteDatabase db = getWritableDatabase();
+
+    String command = "SELECT * FROM login";
+    Cursor cursor = db.rawQuery(command, null);
+    while(cursor.moveToNext()) {
+      String user = cursor.getString(0);
+      String right_pw = cursor.getString(1);
+      //Log.v("ps", right_pw);
+      if(username.equals(user)) {
+        if(password.equals(right_pw)) {
+          return LOGIN_SUCCESS;
+        } else return PASSWORD_ERROR;
+      }
+    }
+    return USER_NOT_FOUND;
+  }
+
+  public static int USER_EXITS = 0;
+  public static int CREATE_SUCCESS = 1;
+  public int createUser(String username, String password) {
+    SQLiteDatabase db = getWritableDatabase();
+
+    String command = "SELECT * FROM login";
+    Cursor cursor = db.rawQuery(command, null);
+    while(cursor.moveToNext()) {
+      String user = cursor.getString(0);
+      if(username.equals(user)) {
+        return USER_EXITS;
+      }
+    }
+
+    ContentValues values = new ContentValues();
+    values.put("username", username);
+    values.put("password", password);
+    db.insertWithOnConflict("login", null, values, SQLiteDatabase.CONFLICT_REPLACE);
+    return CREATE_SUCCESS;
   }
 
   private ContentValues getValues(RSSItem rssItem, int t) {
