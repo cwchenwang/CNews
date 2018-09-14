@@ -1,6 +1,17 @@
 package wangchen.java.com.cnews;
 
+import java.io.IOException;
+import java.net.Socket;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.Handler;
+import android.provider.ContactsContract;
+import android.renderscript.ScriptGroup;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,8 +21,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import wangchen.java.com.cnews.db.NewsDBHelper;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -58,25 +67,125 @@ public class LoginActivity extends AppCompatActivity {
     });
   }
 
-  private void loginButtonClicked() {
-    String email = emailText.getText().toString();
-    String password = passwordText.getText().toString();
-    if(validate(email, password)) {
-      NewsDBHelper db = ((CNewsApp)getApplication()).getDB();
-      int res = db.checkPassword(email, password);
-      if(res == NewsDBHelper.LOGIN_SUCCESS) {
-        Toast.makeText(getApplicationContext(), "登陆成功", Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent();
-        intent.putExtra("USERNAME", email);
-        setResult(LOGIN_SUCCESS, intent);
-        finish();
+//  private void loginButtonClicked() {
+//    String email = emailText.getText().toString();
+//    String password = passwordText.getText().toString();
+//    if(validate(email, password)) {
+//      NewsDBHelper db = ((CNewsApp)getApplication()).getDB();
+//      int res = db.checkPassword(email, password);
+//      if(res == NewsDBHelper.LOGIN_SUCCESS) {
+//        Toast.makeText(getApplicationContext(), "登陆成功", Toast.LENGTH_SHORT).show();
+//        Intent intent = new Intent();
+//        intent.putExtra("USERNAME", email);
+//        setResult(LOGIN_SUCCESS, intent);
+//        finish();
+//
+//      } else if(res == NewsDBHelper.PASSWORD_ERROR) {
+//        Toast.makeText(getApplicationContext(), "密码错误", Toast.LENGTH_SHORT).show();
+//      } else if(res == NewsDBHelper.USER_NOT_FOUND) {
+//        Toast.makeText(getApplicationContext(), "没有找到相应的用户", Toast.LENGTH_SHORT).show();
+//      }
+//    }
+//  }
 
-      } else if(res == NewsDBHelper.PASSWORD_ERROR) {
-        Toast.makeText(getApplicationContext(), "密码错误", Toast.LENGTH_SHORT).show();
-      } else if(res == NewsDBHelper.USER_NOT_FOUND) {
-        Toast.makeText(getApplicationContext(), "没有找到相应的用户", Toast.LENGTH_SHORT).show();
+  private static final String ipAdress = "101.5.121.239";
+  private void loginButtonClicked() {
+    final String email = emailText.getText().toString();
+    final String password = passwordText.getText().toString();
+    if(!validate(email, password)) return;
+
+    final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this,
+            R.style.AppTheme_Dark_Dialog);
+    progressDialog.setIndeterminate(true);
+    progressDialog.setMessage("正在登陆...");
+    progressDialog.show();
+
+    new Thread() {
+      public void run() {
+        try {
+          Socket s1 = new Socket(ipAdress, 6666);
+          OutputStream os = s1.getOutputStream();
+          DataOutputStream dos = new DataOutputStream(os);
+          dos.writeUTF(email + " " + password);
+//      new Handler().postDelayed(new Runnable() {
+//        @Override
+//        public void run() {
+//
+//        }
+//      }, 1000);
+          InputStream is = s1.getInputStream();
+          DataInputStream dis = new DataInputStream(is);
+          String getStr = dis.readUTF();
+          if(getStr.equals("USERNOTEXIST")) {
+            LoginActivity.this.runOnUiThread(new Runnable()
+            {
+              public void run()
+              {
+                Toast.makeText(getApplicationContext(), "用户不存在", Toast.LENGTH_SHORT).show();
+                progressDialog.dismiss();
+              }
+            });
+            return;
+          } else if(getStr.equals("PWERROR")) {
+            LoginActivity.this.runOnUiThread(new Runnable() {
+              public void run() {
+                Toast.makeText(getApplicationContext(), "密码错误", Toast.LENGTH_SHORT).show();
+                progressDialog.dismiss();
+              }
+            });
+            return;
+          }
+          else if(getStr.equals("SUCCESS")) {
+            LoginActivity.this.runOnUiThread(new Runnable()
+            {
+              public void run()
+              {
+                Toast.makeText(getApplicationContext(), "登陆成功", Toast.LENGTH_SHORT).show();
+                progressDialog.dismiss();
+                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                intent.putExtra("USERNAME", email);
+                setResult(LOGIN_SUCCESS, intent);
+                startActivity(intent);
+                finish();
+              }
+            });
+            return;
+          }
+          dis.close();
+          dos.close();
+          s1.close();
+
+        } catch(IOException e) {
+          Toast.makeText(getApplicationContext(), "登录失败 ", Toast.LENGTH_SHORT).show();
+        }
       }
-    }
+    }.start();
+//    try {
+//      Socket s1 = new Socket(ipAdress, 6666);
+//      OutputStream os = s1.getOutputStream();
+//      DataOutputStream dos = new DataOutputStream(os);
+//      dos.writeUTF(email + " " + password);
+////      new Handler().postDelayed(new Runnable() {
+////        @Override
+////        public void run() {
+////
+////        }
+////      }, 1000);
+//      InputStream is = s1.getInputStream();
+//      DataInputStream dis = new DataInputStream(is);
+//      String getStr = dis.readUTF();
+//      if(getStr.equals("YES")) {
+//        Toast.makeText(getApplicationContext(), "登陆成功", Toast.LENGTH_SHORT).show();
+//      } else if(getStr.equals("NO")) {
+//        Toast.makeText(getApplicationContext(), "密码错误", Toast.LENGTH_SHORT).show();
+//      }
+//      dis.close();
+//      dos.close();
+//      s1.close();
+//
+//    } catch(IOException e) {
+//      Toast.makeText(getApplicationContext(), "登录失败 ", Toast.LENGTH_SHORT).show();
+//    }
   }
 
   public boolean validate(String email, String password) {

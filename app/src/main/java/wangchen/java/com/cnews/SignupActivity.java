@@ -12,7 +12,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import wangchen.java.com.cnews.db.NewsDBHelper;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.Socket;
+
 
 public class SignupActivity extends AppCompatActivity {
 
@@ -69,36 +75,82 @@ public class SignupActivity extends AppCompatActivity {
     String address = addressText.getText().toString();
     final String username = usernameText.getText().toString();
     final String password = passwordText.getText().toString();
-    new Thread(new Runnable() {
-      @Override
+    final String ipAdress = "101.5.121.239";
+    new Thread() {
       public void run() {
-        NewsDBHelper db = ((CNewsApp)getApplicationContext()).getDB();
-        int res = db.createUser(username, password);
-        if(res == NewsDBHelper.USER_EXITS) {
-          SignupActivity.this.runOnUiThread(new Runnable()
-          {
-            public void run()
+        try {
+          Socket s1 = new Socket(ipAdress, 6666);
+          OutputStream os = s1.getOutputStream();
+          DataOutputStream dos = new DataOutputStream(os);
+          dos.writeUTF("Register" + " " + username + " " + password);
+//      new Handler().postDelayed(new Runnable() {
+//        @Override
+//        public void run() {
+//
+//        }
+//      }, 1000);
+          InputStream is = s1.getInputStream();
+          DataInputStream dis = new DataInputStream(is);
+          String getStr = dis.readUTF();
+          if(getStr.equals("USEREXISTS")) {
+            SignupActivity.this.runOnUiThread(new Runnable()
             {
-              Toast.makeText(getApplicationContext(), "用户名已被占用", Toast.LENGTH_SHORT).show();
-              progressDialog.dismiss();
-            }
-          });
-          return;
-        } else {
-          SignupActivity.this.runOnUiThread(new Runnable()
-          {
-            public void run()
-            {
-              Toast.makeText(getApplicationContext(), "创建账号成功", Toast.LENGTH_SHORT).show();
-              progressDialog.dismiss();
-            }
-          });
-          startActivity(new Intent(getApplicationContext(), LoginActivity.class));
-          return;
+              public void run()
+              {
+                Toast.makeText(getApplicationContext(), "用户名已经存在", Toast.LENGTH_SHORT).show();
+                progressDialog.dismiss();
+              }
+            });
+            return;
+          } else if(getStr.equals("REGISTERSUCCESS")) {
+            SignupActivity.this.runOnUiThread(new Runnable() {
+              public void run() {
+                Toast.makeText(getApplicationContext(), "注册成功", Toast.LENGTH_SHORT).show();
+                progressDialog.dismiss();
+              }
+            });
+            startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+            return;
+          }
+          dis.close();
+          dos.close();
+          s1.close();
+
+        } catch(IOException e) {
+          Toast.makeText(getApplicationContext(), "登录失败 ", Toast.LENGTH_SHORT).show();
         }
       }
-    }) {
     }.start();
+//    new Thread(new Runnable() {
+//      @Override
+//      public void run() {
+//        NewsDBHelper db = ((CNewsApp)getApplicationContext()).getDB();
+//        int res = db.createUser(username, password);
+//        if(res == NewsDBHelper.USER_EXITS) {
+//          SignupActivity.this.runOnUiThread(new Runnable()
+//          {
+//            public void run()
+//            {
+//              Toast.makeText(getApplicationContext(), "用户名已被占用", Toast.LENGTH_SHORT).show();
+//              progressDialog.dismiss();
+//            }
+//          });
+//          return;
+//        } else {
+//          SignupActivity.this.runOnUiThread(new Runnable()
+//          {
+//            public void run()
+//            {
+//              Toast.makeText(getApplicationContext(), "创建账号成功", Toast.LENGTH_SHORT).show();
+//              progressDialog.dismiss();
+//            }
+//          });
+//          startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+//          return;
+//        }
+//      }
+//    }) {
+//    }.start();
   }
 
   public boolean validate() {

@@ -1,7 +1,5 @@
 package wangchen.java.com.cnews;
 
-import wangchen.java.com.cnews.db.NewsDBHelper;
-
 import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;

@@ -5,7 +5,6 @@ import android.util.Log;
 
 import java.util.HashMap;
 
-import wangchen.java.com.cnews.db.NewsDBHelper;
 
 //To save global variables
 

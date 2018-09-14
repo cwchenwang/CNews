@@ -12,7 +12,6 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import wangchen.java.com.cnews.db.NewsDBHelper;
 
 public class NewsCollectActivity extends AppCompatActivity {
 

@@ -1,4 +1,4 @@
-package wangchen.java.com.cnews.db;
+package wangchen.java.com.cnews;
 
 import android.content.ContentValues;
 import android.content.Context;

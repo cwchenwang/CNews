@@ -28,7 +28,6 @@ import java.util.HashMap;
 import android.content.Context;
 import android.widget.Toast;
 
-import wangchen.java.com.cnews.db.NewsDBHelper;
 
 public class NewsFragment extends Fragment {
   private ListView listView;

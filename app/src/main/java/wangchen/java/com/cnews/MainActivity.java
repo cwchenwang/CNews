@@ -36,10 +36,6 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import wangchen.java.com.cnews.db.NewsDBHelper;
-
-import static android.support.v4.view.PagerAdapter.POSITION_NONE;
-
 public class MainActivity extends AppCompatActivity {
   private ArrayList<TypeName> typeList = new ArrayList<TypeName>() {{
     for(TypeName typeName : TypeName.values()) {
@@ -61,6 +57,9 @@ public class MainActivity extends AppCompatActivity {
   private DrawerLayout mDrawerLayout;
   private AlertDialog.Builder builder;
   private NavigationView navigationView;
+
+  private String username = "登录/注册";
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -175,6 +174,10 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(intent, REQUEST_LOGIN);
       }
     });
+
+    if(getIntent() != null) username = getIntent().getStringExtra("USERNAME");
+    TextView textView = navigationView.getHeaderView(0).findViewById(R.id.username_display);
+    textView.setText(username);
   }
 
   @Override
